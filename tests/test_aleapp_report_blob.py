@@ -89,3 +89,20 @@ def test_report_blob_paths_are_portable(report_zip):
     # built on any OS, unpacked by Hansken: zip entries must use '/' and stay inside the report folder
     for name in report_zip.namelist():
         assert '\\' not in name and not name.startswith('/') and '..' not in name.split('/'), name
+
+
+def test_report_blob_keeps_the_staged_evidence(report_zip):
+    # ALEAPP's data/ (copies of the input) stays in the report; the loop it caused is stopped in process() (#21)
+    assert any(name.startswith('data/') and name.endswith('gmm_storage.db') for name in report_zip.namelist())
+
+
+@pytest.mark.parametrize('path', [
+    '/example/data/data/com.google.android.apps.maps/databases/gmm_storage.db/ALEAPP report/_HTML/media/x.db',
+    ['example', 'gmm_storage.db', 'ALEAPP report', 'data', 'gmm_storage.db'],
+])
+def test_traces_inside_a_report_are_skipped(path, searcher):
+    # issue #21: Hansken unpacks the report zip; its data/data/.../gmm_storage.db matched the plugin again
+    trace = FakeTrace({'path': path, 'file': {'path': '/data/data/com.google.android.apps.maps/databases/'
+                                                      'gmm_storage.db'}}, b'x')
+    plugin.Plugin().process(trace, DataContext(data_type='raw', data_size=1), searcher)
+    assert trace.tree() == {}

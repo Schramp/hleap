@@ -31,6 +31,7 @@ ARTIFACT_MODULE = 'googleMapsGmm'
 ARTIFACT_KEY = 'get_googleMapsGmm'
 
 REPORT_FOLDER = 'report'
+REPORT_CHILD = 'ALEAPP report'
 # LAVA output of ALEAPP: artifact metadata (json) and one sqlite table per artifact
 LAVA_JSON = '_lava_data.lava'
 LAVA_DB = '_lava_artifacts.db'
@@ -190,6 +191,13 @@ def add_lava_children(trace, report_dir):
     return count
 
 
+def inside_report(trace):
+    """True when the trace lies inside an ALEAPP report child of this plugin (its trace path has one)."""
+    path = trace.get('path') or ''
+    names = path if isinstance(path, (list, tuple)) else str(path).split('/')
+    return REPORT_CHILD in names
+
+
 class Plugin(DeferredExtractionPlugin):
 
     def plugin_info(self):
@@ -207,6 +215,11 @@ class Plugin(DeferredExtractionPlugin):
         return plugin_info
 
     def process(self, trace, data_context, searcher):
+        if inside_report(trace):
+            # Hansken unpacks the report zip, which holds ALEAPP's copies of the evidence (data/, media/): they
+            # must not start a new run on the plugin's own output
+            log.info(f'{trace.get("path")} lies inside an {REPORT_CHILD}, skipping')
+            return
         rel_path = (trace.get('file.path') or '').lstrip('/')
         # the matcher only checks the file name, ALEAPP matches its globs against 'root/' + relative path
         if not any(fnmatch.fnmatch('root/' + rel_path, glob) for glob in ARTIFACT_PATHS):
@@ -223,7 +236,7 @@ class Plugin(DeferredExtractionPlugin):
                 with open(os.path.join(tsv_dir, tsv), 'rb') as tsv_file:
                     trace.child_builder(os.path.splitext(tsv)[0]).add_data('raw', tsv_file.read()).build()
             if HLEAPP_REPORT:
-                trace.child_builder('ALEAPP report').add_data('raw', zip_folder(report_dir)).build()
+                trace.child_builder(REPORT_CHILD).add_data('raw', zip_folder(report_dir)).build()
 
 
 if __name__ == '__main__':
