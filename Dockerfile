@@ -44,5 +44,5 @@ ENV PATH="/venv/bin:$PATH"
 COPY ALEAPP /app/ALEAPP
 COPY plugin.py anchors.py hleapp_rpc.py hleapp_launcher.py hleapp.alprofile /app/
 EXPOSE 8999
-ENTRYPOINT ["serve_plugin", "-v"]
+ENTRYPOINT ["serve_plugin", "-vvv"]
 CMD ["/app/plugin.py", "8999"]
