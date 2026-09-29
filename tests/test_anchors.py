@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from anchors import CONFLICT_DROPS, Anchor, AnchorPlan, load_modules, tree_paths
+from anchors import CONFLICT_DROPS, Anchor, AnchorPlan, load_modules, load_profile, tree_paths, write_profile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TREE = os.path.join(ROOT, 'testdata', 'practical_exercise.zip')
@@ -119,3 +119,19 @@ def test_globs_elsewhere_search_the_whole_image():
     anchor = 'root/data/data/com.other/databases/x.db'
     assert plan.search_scope(['media'], '*/com.chess/shared_prefs/*', anchor) is None
     assert plan.search_scope(['chess', 'media'], '*/com.chess/shared_prefs/*', folder, is_dir=True) is None
+
+
+def test_example_profile_selects_exactly_the_modules_the_test_tree_starts():
+    modules = load_modules(os.path.join(ROOT, 'ALEAPP'))
+    selected = load_profile(os.path.join(ROOT, 'hleapp.alprofile'), modules)
+    plan = AnchorPlan(modules, drop=CONFLICT_DROPS)
+    files, dirs = tree_paths(TREE)
+    started = {key for path in files | dirs for key in plan.triggered_by(path, is_dir=path in dirs)}
+    assert set(selected) == started
+
+
+def test_profile_with_unknown_modules_is_refused(tmp_path):
+    path = tmp_path / 'typo.alprofile'
+    write_profile(path, ['get_googleMapsGmm', 'get_googleMapsGnm'])
+    with pytest.raises(ValueError, match='get_googleMapsGnm'):
+        load_profile(path, load_modules(os.path.join(ROOT, 'ALEAPP')))

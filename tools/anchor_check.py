@@ -5,6 +5,10 @@ plugin matcher. Exits 1 when conflicts remain after the drops (never expected, t
 
 Usage:
     python tools/anchor_check.py testdata/practical_exercise.zip [--matcher] [--aleapp ALEAPP]
+                                 [--profile hleapp.alprofile] [--write-profile hleapp.alprofile]
+
+--profile checks only the modules an ALEAPP profile selects; --write-profile writes a profile with the kept
+modules the tree starts (the modules relevant for that tree).
 """
 import argparse
 import collections
@@ -13,7 +17,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from anchors import AnchorPlan, load_modules, tree_paths  # noqa: E402
+from anchors import CONFLICT_DROPS, AnchorPlan, load_modules, load_profile, tree_paths, write_profile  # noqa: E402
 
 
 def main():
@@ -21,9 +25,13 @@ def main():
     parser.add_argument('source', help='extracted tree: directory or zip')
     parser.add_argument('--aleapp', default='ALEAPP', help='ALEAPP checkout (default: the submodule)')
     parser.add_argument('--matcher', action='store_true', help='print the generated HQL-Lite matcher')
+    parser.add_argument('--profile', help='only check the modules this ALEAPP profile selects')
+    parser.add_argument('--write-profile', help='write an ALEAPP profile with the kept modules the tree starts')
     args = parser.parse_args()
 
-    plan = AnchorPlan(load_modules(args.aleapp))
+    modules = load_modules(args.aleapp)
+    select = load_profile(args.profile, modules) if args.profile else None
+    plan = AnchorPlan(modules, drop=CONFLICT_DROPS, select=select)
     files, dirs = tree_paths(args.source)
     conflicts = plan.check(files, dirs)
 
@@ -45,6 +53,11 @@ def main():
             started += len(keys)
             print(f'  {path[len("root/"):]}{"/" if path in dirs else ""}: {", ".join(keys)}')
     print(f'  {started} module runs')
+
+    if args.write_profile:
+        started = {key for path in files | dirs for key in plan.triggered_by(path, is_dir=path in dirs)}
+        write_profile(args.write_profile, started)
+        print(f'\nWrote {len(started)} modules to {args.write_profile}')
 
     if args.matcher:
         print(f'\nMatcher ({len(plan.kept)} anchors):\n{plan.matcher()}')

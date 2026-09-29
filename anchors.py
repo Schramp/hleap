@@ -17,6 +17,7 @@ so a Hansken file.path '/data/...' is matched as 'root/data/...'.
 """
 import ast
 import fnmatch
+import json
 import os
 import re
 
@@ -59,6 +60,25 @@ def load_modules(aleapp_dir):
                     if paths:
                         modules[key] = paths
     return modules
+
+
+def load_profile(path, modules):
+    """The module keys an ALEAPP profile (.alprofile) selects, checked against the known modules."""
+    with open(path, encoding='utf8') as profile_file:
+        profile = json.load(profile_file)
+    if profile.get('leapp') != 'aleapp':
+        raise ValueError(f'{path} is not an ALEAPP profile')
+    selected = profile.get('plugins') or []
+    unknown = sorted(set(selected) - set(modules))
+    if unknown:
+        raise ValueError(f'{path} names unknown ALEAPP modules: {", ".join(unknown)}')
+    return selected
+
+
+def write_profile(path, selected):
+    with open(path, 'w', encoding='utf8') as profile_file:
+        json.dump({'leapp': 'aleapp', 'format_version': 1, 'plugins': sorted(selected)}, profile_file, indent=2)
+        profile_file.write('\n')
 
 
 def is_sidecar(path):
@@ -114,7 +134,10 @@ class Anchor:
 class AnchorPlan:
     """Kept and dropped modules for a set of ALEAPP modules, optionally checked against a concrete file tree."""
 
-    def __init__(self, modules, drop=None):
+    def __init__(self, modules, drop=None, select=None):
+        """select: module keys to use (e.g. from load_profile()), None for all."""
+        if select is not None:
+            modules = {key: paths for key, paths in modules.items() if key in set(select)}
         self.modules = modules
         self.anchors = {key: Anchor(paths[0]) for key, paths in modules.items()}
         self.dropped = {key: 'anchor without literal text' for key, anchor in self.anchors.items()

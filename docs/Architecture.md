@@ -23,6 +23,13 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   `plugin.py`, #4/#13, see Target design). `process()` checks the trace path
   exactly against the anchors and runs every module it starts in one ALEAPP
   run (multi-module `.alprofile`).
+- **Module selection** (#24): `hleapp.alprofile` (ALEAPP's own profile
+  format, so ALEAPP's GUI can edit it too) selects the modules the plugin
+  uses; path overridable with `HLEAPP_PROFILE`, all modules when the file is
+  absent, unknown module names are an error. It now holds the 54 modules the
+  example tree starts (Google Maps, Life360, AirTag, Mister Skinnylegs browser
+  modules, `imagemngCache`): matcher 2.2 KB (13 clauses) instead of ~118 KB
+  for all 1255 modules.
 - **Execution**: ALEAPP runs as a subprocess in a separate venv
   (`/opt/aleapp-venv`), because ALEAPP pins protobuf 5.x and the plugin SDK
   needs protobuf 7.x. An `.alprofile` limits ALEAPP to the selected module(s).
@@ -142,6 +149,9 @@ Dropped: #5 (generate matchers from all globs) conflicts with the deferred
 constraint; replaced by #13.
 
 ## Development setup
+- Regenerate the module selection for a tree (the modules it starts):
+  `python tools/anchor_check.py testdata/practical_exercise.zip --write-profile hleapp.alprofile`;
+  check a selection with `--profile hleapp.alprofile [--matcher]`.
 - Two venvs: plugin/tox (`requirements.txt`) and ALEAPP
   (`ALEAPP/requirements.txt`); point `ALEAPP_PYTHON` at the ALEAPP interpreter
   (tox passes `ALEAPP_*` through).

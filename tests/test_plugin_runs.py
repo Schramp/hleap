@@ -3,6 +3,7 @@ import pytest
 from hansken_extraction_plugin.api.data_context import DataContext
 
 import plugin
+from anchors import load_profile
 from fake_trace import FakeTrace
 
 
@@ -29,7 +30,19 @@ def process(path, raw=b'x'):
 
 def test_matcher_comes_from_the_anchor_plan():
     assert plugin.Plugin().plugin_info().matcher == plugin.PLAN.matcher()
-    assert "gmm_storage.db*'" in plugin.MATCHER and len(plugin.PLAN.kept) > 1000
+    assert "gmm_storage.db*'" in plugin.MATCHER
+
+
+def test_the_profile_selects_the_modules():
+    selected = load_profile(plugin.PROFILE, plugin._MODULES)
+    assert set(plugin.PLAN.kept) == set(selected) - set(plugin.PLAN.dropped)
+    assert 'get_googleMapsGmm' in plugin.PLAN.kept and 'get_Life360_chat_messages' not in plugin.PLAN.kept
+    assert plugin.MATCHER.count(' OR ') + 1 == len({anchor.hql_lite() for anchor in plugin.PLAN.kept.values()})
+
+
+def test_modules_outside_the_profile_do_not_run(runs):
+    process('/data/data/com.whatsapp/databases/msgstore.db')  # a WhatsApp module anchor, not in the profile
+    assert runs == []
 
 
 def test_one_run_with_every_module_the_trace_starts(runs):

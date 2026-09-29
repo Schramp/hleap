@@ -16,7 +16,7 @@ from hansken_extraction_plugin.api.plugin_info import Author, MaturityLevel, Plu
 from hansken_extraction_plugin.runtime.extraction_plugin_runner import run_with_hanskenpy
 from logbook import Logger
 
-from anchors import CONFLICT_DROPS, AnchorPlan, load_modules
+from anchors import CONFLICT_DROPS, AnchorPlan, load_modules, load_profile
 from hleapp_rpc import RpcServer
 
 log = Logger(__name__)
@@ -36,8 +36,12 @@ LAVA_JSON = '_lava_data.lava'
 LAVA_DB = '_lava_artifacts.db'
 
 
-# which ALEAPP modules run, started by which traces (anchors.py, issue #13); conflicting modules are dropped
-PLAN = AnchorPlan(load_modules(ALEAPP_DIR), drop=CONFLICT_DROPS)
+# which ALEAPP modules run (the ALEAPP profile hleapp.alprofile, #24; all modules when it is absent), started by
+# which traces (anchors.py, #13); conflicting modules are dropped
+PROFILE = os.environ.get('HLEAPP_PROFILE', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hleapp.alprofile'))
+_MODULES = load_modules(ALEAPP_DIR)
+PLAN = AnchorPlan(_MODULES, drop=CONFLICT_DROPS,
+                  select=load_profile(PROFILE, _MODULES) if os.path.isfile(PROFILE) else None)
 MATCHER = PLAN.matcher()
 SEARCH_LIMIT = 100
 
