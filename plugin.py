@@ -18,6 +18,8 @@ log = Logger(__name__)
 ALEAPP_DIR = os.environ.get('ALEAPP_DIR', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ALEAPP'))
 ALEAPP_PYTHON = os.environ.get('ALEAPP_PYTHON', '/opt/aleapp-venv/bin/python')
 ALEAPP_TIMEOUT = int(os.environ.get('ALEAPP_TIMEOUT', '600'))
+# the zipped report holds run timestamps, tests turn it off to get reproducible results
+HLEAPP_REPORT = os.environ.get('HLEAPP_REPORT', '1') != '0'
 
 # the single ALEAPP artifact this plugin runs (phase 1): module in scripts/artifacts, key in __artifacts_v2__
 ARTIFACT_MODULE = 'googleMapsGmm'
@@ -117,7 +119,8 @@ class Plugin(ExtractionPlugin):
             for tsv in sorted(os.listdir(tsv_dir)) if os.path.isdir(tsv_dir) else []:
                 with open(os.path.join(tsv_dir, tsv), 'rb') as tsv_file:
                     trace.child_builder(os.path.splitext(tsv)[0]).add_data('raw', tsv_file.read()).build()
-            trace.child_builder('ALEAPP report').add_data('raw', zip_folder(report_dir)).build()
+            if HLEAPP_REPORT:
+                trace.child_builder('ALEAPP report').add_data('raw', zip_folder(report_dir)).build()
 
 
 if __name__ == '__main__':

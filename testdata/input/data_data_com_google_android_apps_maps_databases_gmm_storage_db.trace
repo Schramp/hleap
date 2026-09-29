@@ -1,0 +1,9 @@
+{
+  "trace": {
+    "file": {
+      "name": "gmm_storage.db",
+      "path": "/data/data/com.google.android.apps.maps/databases/gmm_storage.db",
+      "extension": "db"
+    }
+  }
+}

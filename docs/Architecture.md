@@ -47,6 +47,7 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
 ## Open issues
 - ALEAPP globs vs Hansken `file.path` format (leading `/`, image prefix).
 - Multi-file artifacts need a deferred plugin + searcher.
-- ALEAPP report zip contains timestamps, so expected test results may not be
-  reproducible.
+- ALEAPP report zip contains run timestamps (logs, `index.html`, LAVA dbs,
+  zip mtimes), so tests run with `HLEAPP_REPORT=0` (set in `tox.ini`) and only
+  check the TSV child traces.
 - ALEAPP runtime deps (`sqlcipher3`, git dep `mister_skinnylegs`) in the slim image.

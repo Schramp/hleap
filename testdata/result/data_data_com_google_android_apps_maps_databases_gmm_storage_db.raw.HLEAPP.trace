@@ -1,0 +1,21 @@
+{
+  "trace" : {
+    "id" : "0",
+    "name" : "test-input-trace",
+    "path" : "/test-input-trace",
+    "file" : {
+      "extension" : "db",
+      "name" : "gmm_storage.db",
+      "path" : "/data/data/com.google.android.apps.maps/databases/gmm_storage.db"
+    }
+  },
+  "children" : [
+    {
+      "trace" : {
+        "id" : "0-0",
+        "name" : "Google Maps Directions",
+        "path" : "/test-input-trace/Google Maps Directions"
+      }
+    }
+  ]
+}
