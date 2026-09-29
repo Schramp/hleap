@@ -33,11 +33,16 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
 - **Execution**: ALEAPP runs as a subprocess in a separate venv
   (`/opt/aleapp-venv`), because ALEAPP pins protobuf 5.x and the plugin SDK
   needs protobuf 7.x. An `.alprofile` limits ALEAPP to the selected module(s).
-- **Output**: per input trace, child traces:
-  - `ALEAPP report` — zipped ALEAPP output folder (HTML/TSV/LAVA)
-  - one child per produced TSV (`<artifact name>`), with the TSV as raw data
+- **Output**: the child traces are based on ALEAPP's **LAVA** output
+  (`_lava_data.lava` + `_lava_artifacts.db`, #11), not on `_TSV Exports`:
+  LAVA holds the same rows plus typed columns (see *Event timestamps from
+  LAVA*). Per input trace:
+  - the artifact children built from LAVA;
+  - `ALEAPP report` — zipped ALEAPP output folder (HTML/TSV/LAVA). The TSV
+    files may still appear in it; we could decide later to leave them out
+    (they duplicate the LAVA rows).
 
-  No mapping to native Hansken trace types yet.
+  No mapping to native Hansken trace types yet; timestamps first (below).
 
 ## Target design
 - **Deferred constraint (hard rule)**: traces matched by a deferred plugin are
@@ -110,6 +115,49 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   sends handler errors back as error replies. ALEAPP's output goes to
   `aleapp.log` in the work dir instead of a pipe, so it cannot block while
   requests are served.
+
+## Event timestamps from LAVA
+Checked on ALEAPP output for the example tree (Google Maps, Life360, AirTag
+modules) and in `ALEAPP/scripts/lavafuncs.py`: LAVA has enough to create
+properly timestamped events, with a few rules we have to add ourselves.
+
+What LAVA gives:
+- **Typed columns.** ALEAPP modules declare column types in their headers,
+  e.g. `('Timestamp', 'datetime')`; 413 of 517 module files declare
+  `datetime` columns, 14 `date`. `_lava_data.lava` lists them per artifact
+  in `object_columns` (`{"name": "timestamp", "type": "datetime"}`), next to
+  `column_map` (SQL column → original header).
+- **UTC epoch seconds.** `datetime` and `date` columns are `INTEGER` in
+  `_lava_artifacts.db`, holding UTC Unix timestamps (e.g. `1722121358`);
+  `lavafuncs._restore_lava_value()` turns them back into UTC datetimes.
+- **Source.** Per artifact `source_path` (the file it came from); some
+  modules add a per-row source column (Life360: `Source File`).
+
+What LAVA does not give, so the plugin must decide:
+- **Which column is the event time.** Artifacts can have several `datetime`
+  columns (AirTag: `Creation Timestamp`, `Last Updated Timestamp`). Proposed
+  rule, following ALEAPP's own conventions (its timeline keys on the first
+  column, its KML export on `Timestamp` or else the first `datetime` column):
+  the first column when it is `datetime`, else a column named `Timestamp`,
+  else the first `datetime` column; the other `datetime` columns become
+  additional timestamps on the same trace. Rows without any (Google Maps
+  Directions) get no event.
+- **Timezone correctness.** LAVA stores UTC, but ALEAPP treats a naive
+  value as UTC (`lavafuncs._prepare_datetime_value`). A module that produces
+  local wall-clock time without a timezone ends up shifted, and LAVA cannot
+  tell. Needs checking per module we map.
+- **Precision.** Whole seconds only; sub-second parts are dropped (Life360
+  keeps `Elapsed Realtime Nanos` as text).
+- **Semantics.** No field says what the event *is* beyond the artifact name
+  and category; latitude/longitude are text columns recognised only by
+  header name (ALEAPP's KML export uses `Latitude`/`Longitude`).
+- **Data quality.** Text columns can hold raw bytes from the evidence (the
+  Google Maps Directions longitude contains NUL bytes), so values need
+  sanitising before they become Hansken properties.
+
+Next: map the chosen time column (and the others) onto Hansken's `event`
+data type, property names from the Hansken trace model; start with the
+example modules (#8).
 
 ## Roadmap
 Tracked as GitHub issues with priority labels, worked on as described in
