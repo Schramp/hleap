@@ -38,8 +38,13 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   - from the LAVA report (`_lava_data.lava` + `_lava_artifacts.db`, #11): a
     child per artifact category (`GEO Location`) and below it a child per
     non-empty artifact (`Google Maps Directions`), raw data = TSV of its
-    LAVA table with the original ALEAPP headers. Same rows as ALEAPP's
-    `_TSV Exports`, which are no longer used.
+    LAVA table with the original ALEAPP headers. Typed columns
+    (`object_columns` in the `.lava`) are rendered as ALEAPP's TSV export
+    does: `datetime` (whole epoch seconds in LAVA) as `2024-04-23
+    12:52:34+00:00`, `media` (a reference id) as its `media/<id>.<ext>`
+    path in the report. Checked on 14 Google Maps/Life360 artifacts of
+    `practical_exercise` (~31k rows): identical to `_TSV Exports` except
+    for the sub-second part of timestamps, which LAVA does not keep.
 
   No mapping to native Hansken trace types yet.
 
@@ -181,4 +186,8 @@ constraint; replaced by #13.
 - ALEAPP report zip contains run timestamps (logs, `index.html`, LAVA dbs,
   zip mtimes), so tests run with `HLEAPP_REPORT=0` (set in `tox.ini`) and only
   check the LAVA child traces.
+- ALEAPP's LAVA stores `datetime` columns as whole seconds
+  (`scripts/lavafuncs.py`, `_prepare_datetime_value`), so the child traces
+  lose the milliseconds ALEAPP's HTML/TSV show. Fix in the Schramp/ALEAPP
+  fork (store a float epoch) or upstream, #9.
 - ALEAPP runtime deps (`sqlcipher3`, git dep `mister_skinnylegs`) in the slim image.

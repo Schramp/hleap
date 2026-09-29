@@ -100,3 +100,35 @@ def test_empty_report_adds_no_children(tmp_path):
 
     assert add_lava_children(trace, report_dir) == 0
     assert trace.children == []
+
+
+def test_typed_columns_are_rendered_as_in_aleapps_tsv(tmp_path):
+    """object_columns: 'datetime' is whole epoch seconds (UTC), 'media' a reference id (a JSON list for several)."""
+    db = sqlite3.connect(tmp_path / LAVA_DB)
+    db.execute('CREATE TABLE "chat" ("timestamp" INTEGER, "message" TEXT, "photo" TEXT)')
+    db.executemany('INSERT INTO "chat" VALUES (?, ?, ?)', [
+        (1713876754, 'hi', 'ref1'),
+        (None, 'two photos', '["ref1", "ref2"]'),
+        (1713876800, 'no photo', ''),
+    ])
+    db.execute('CREATE TABLE _lava_media_items (id TEXT PRIMARY KEY, extraction_path TEXT)')
+    db.execute('CREATE TABLE _lava_media_references (id TEXT PRIMARY KEY, media_item_id TEXT)')
+    db.executemany('INSERT INTO _lava_media_items VALUES (?, ?)', [('item1', 'media/item1.jpg'),
+                                                                   ('item2', 'media/item2.png')])
+    db.executemany('INSERT INTO _lava_media_references VALUES (?, ?)', [('ref1', 'item1'), ('ref2', 'item2')])
+    db.commit()
+    db.close()
+    (tmp_path / LAVA_JSON).write_text(json.dumps({'artifacts': {'Chats': [{
+        'name': 'Life360 - Chat Messages', 'tablename': 'chat',
+        'column_map': {'timestamp': 'Timestamp', 'message': 'Message', 'photo': 'Photo'},
+        'object_columns': [{'name': 'timestamp', 'type': 'datetime'}, {'name': 'photo', 'type': 'media'}],
+    }]}}), encoding='utf8')
+    trace = FakeTrace({'name': 'messaging.db'})
+
+    add_lava_children(trace, tmp_path)
+
+    assert trace.child('Chats').child('Life360 - Chat Messages').data['raw'] == (
+        b'Timestamp\tMessage\tPhoto\n'
+        b'2024-04-23 12:52:34+00:00\thi\tmedia/item1.jpg\n'
+        b'\ttwo photos\tmedia/item1.jpg | media/item2.png\n'
+        b'2024-04-23 12:53:20+00:00\tno photo\t\n')

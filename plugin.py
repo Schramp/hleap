@@ -1,6 +1,7 @@
 import csv
 import datetime
 import fnmatch
+import functools
 import io
 import json
 import os
@@ -193,8 +194,33 @@ def zip_folder(folder):
     return buffer.getvalue()
 
 
+def lava_datetime(value):
+    """LAVA stores a 'datetime' column as whole epoch seconds (UTC), ALEAPP's TSV prints str(datetime)."""
+    if isinstance(value, (int, float)):
+        return str(datetime.datetime.fromtimestamp(value, tz=datetime.timezone.utc))
+    return value
+
+
+def lava_media(db, value):
+    """LAVA stores a 'media' column as a media reference id (a JSON list for several), ALEAPP's TSV prints the
+    extraction path of the media file in the report ('media/<id>.<ext>'), several joined by ' | '."""
+    if not value:
+        return ''
+    ids = json.loads(value) if isinstance(value, str) and value.startswith('[') else [value]
+    paths = []
+    for ref_id in ids:
+        found = db.execute('SELECT i.extraction_path FROM _lava_media_references r '
+                           'JOIN _lava_media_items i ON r.media_item_id = i.id WHERE r.id = ?', (ref_id,)).fetchone()
+        if found and found[0]:
+            paths.append(found[0])
+    return ' | '.join(paths)
+
+
 def read_lava(report_dir):
-    """Yield (category, artifact name, header, rows) for every non-empty artifact in an ALEAPP LAVA report."""
+    """Yield (category, artifact name, header, rows) for every non-empty artifact in an ALEAPP LAVA report.
+
+    Values are rendered as ALEAPP's own TSV export does, except that LAVA keeps no sub-second part of timestamps.
+    """
     with open(os.path.join(report_dir, LAVA_JSON), encoding='utf8') as lava_file:
         lava = json.load(lava_file)
     db = sqlite3.connect(pathlib.Path(report_dir, LAVA_DB).resolve().as_uri() + '?mode=ro', uri=True)
@@ -205,9 +231,20 @@ def read_lava(report_dir):
                 cursor = db.execute(f'SELECT * FROM "{table}"')
                 rows = cursor.fetchall()
                 if rows:
+                    columns = [column[0] for column in cursor.description]
                     # LAVA stores sanitized sql column names, column_map gives the original ALEAPP headers back
                     column_map = artifact.get('column_map') or {}
-                    header = [column_map.get(column[0], column[0]) for column in cursor.description]
+                    header = [column_map.get(column, column) for column in columns]
+                    # typed columns ('datetime', 'media', ...) are listed in object_columns, the rest is TEXT
+                    types = {column['name']: column['type'] for column in artifact.get('object_columns') or ()}
+                    converters = [
+                        lava_datetime if types.get(column) == 'datetime'
+                        else functools.partial(lava_media, db) if types.get(column) == 'media'
+                        else None
+                        for column in columns]
+                    if any(converters):
+                        rows = [tuple(convert(value) if convert else value for convert, value in zip(converters, row))
+                                for row in rows]
                     yield category, artifact['name'], header, rows
     finally:
         db.close()
