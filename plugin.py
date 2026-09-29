@@ -1,10 +1,13 @@
 import ast
+import csv
 import datetime
 import fnmatch
 import io
 import json
 import os
+import pathlib
 import posixpath
+import sqlite3
 import subprocess
 import tempfile
 import zipfile
@@ -28,6 +31,9 @@ ARTIFACT_MODULE = 'googleMapsGmm'
 ARTIFACT_KEY = 'get_googleMapsGmm'
 
 REPORT_FOLDER = 'report'
+# LAVA output of ALEAPP: artifact metadata (json) and one sqlite table per artifact
+LAVA_JSON = '_lava_data.lava'
+LAVA_DB = '_lava_artifacts.db'
 
 
 def read_artifact_paths(module, key):
@@ -135,6 +141,47 @@ def zip_folder(folder):
                 path = os.path.join(dirpath, filename)
                 archive.write(path, os.path.relpath(path, folder))
     return buffer.getvalue()
+
+
+def read_lava(report_dir):
+    """Yield (category, artifact name, header, rows) for every non-empty artifact in an ALEAPP LAVA report."""
+    with open(os.path.join(report_dir, LAVA_JSON), encoding='utf8') as lava_file:
+        lava = json.load(lava_file)
+    db = sqlite3.connect(pathlib.Path(report_dir, LAVA_DB).resolve().as_uri() + '?mode=ro', uri=True)
+    try:
+        for category, artifacts in sorted(lava.get('artifacts', {}).items()):
+            for artifact in artifacts:
+                table = artifact['tablename'].replace('"', '""')
+                cursor = db.execute(f'SELECT * FROM "{table}"')
+                rows = cursor.fetchall()
+                if rows:
+                    # LAVA stores sanitized sql column names, column_map gives the original ALEAPP headers back
+                    column_map = artifact.get('column_map') or {}
+                    header = [column_map.get(column[0], column[0]) for column in cursor.description]
+                    yield category, artifact['name'], header, rows
+    finally:
+        db.close()
+
+
+def to_tsv(header, rows):
+    buffer = io.StringIO()
+    writer = csv.writer(buffer, delimiter='\t', lineterminator='\n')
+    writer.writerow(header)
+    writer.writerows(rows)
+    return buffer.getvalue().encode('utf8')
+
+
+def add_lava_children(trace, report_dir):
+    """Add a child per artifact category and below it a child per artifact (raw = TSV), returns the artifact count."""
+    categories = {}
+    count = 0
+    for category, name, header, rows in read_lava(report_dir):
+        if category not in categories:
+            categories[category] = trace.child_builder(category)
+            categories[category].build()  # the SDK requires a parent to be built before its children
+        categories[category].child_builder(name).add_data('raw', to_tsv(header, rows)).build()
+        count += 1
+    return count
 
 
 class Plugin(DeferredExtractionPlugin):
