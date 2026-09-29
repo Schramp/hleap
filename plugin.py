@@ -17,6 +17,8 @@ from hansken_extraction_plugin.api.plugin_info import Author, MaturityLevel, Plu
 from hansken_extraction_plugin.runtime.extraction_plugin_runner import run_with_hanskenpy
 from logbook import Logger
 
+from hleapp_rpc import RpcServer
+
 log = Logger(__name__)
 
 # ALEAPP runs in its own interpreter: it pins protobuf 5.x, the plugin SDK needs protobuf 7.x
@@ -127,16 +129,22 @@ def emulate_fs(trace, finder, fs_dir):
     return sorted(written.values())
 
 
-def run_aleapp(fs_dir, out_dir, work_dir):
+def run_aleapp(fs_dir, out_dir, work_dir, handlers=None):
+    """Run ALEAPP in its own venv and serve its RPC requests (handlers, see hleapp_rpc) on this thread."""
     os.makedirs(out_dir, exist_ok=True)
     profile = os.path.join(work_dir, 'hleapp.alprofile')
     with open(profile, 'w') as profile_file:
         json.dump({'leapp': 'aleapp', 'format_version': 1, 'plugins': [ARTIFACT_KEY]}, profile_file)
     command = [ALEAPP_PYTHON, os.path.join(ALEAPP_DIR, 'aleapp.py'), '-t', 'fs', '-i', fs_dir, '-o', out_dir,
                '-m', profile, '--custom_output_folder', REPORT_FOLDER]
-    result = subprocess.run(command, cwd=ALEAPP_DIR, capture_output=True, text=True, timeout=ALEAPP_TIMEOUT)
-    if result.returncode != 0:
-        raise RuntimeError(f'ALEAPP failed ({result.returncode}): {result.stdout[-2000:]}{result.stderr[-2000:]}')
+    # ALEAPP output goes to a file: a pipe nobody reads while requests are served could fill up and block ALEAPP
+    aleapp_log = os.path.join(work_dir, 'aleapp.log')
+    with open(aleapp_log, 'w') as log_file:
+        returncode = RpcServer(handlers or {}, log).run(command, ALEAPP_TIMEOUT, cwd=ALEAPP_DIR,
+                                                        stdout=log_file, stderr=subprocess.STDOUT)
+    if returncode != 0:
+        with open(aleapp_log, errors='replace') as log_file:
+            raise RuntimeError(f'ALEAPP failed ({returncode}): {log_file.read()[-4000:]}')
     return os.path.join(out_dir, REPORT_FOLDER)
 
 

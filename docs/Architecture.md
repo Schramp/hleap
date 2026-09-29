@@ -68,12 +68,20 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   files of the Life360 API cache modules); runs then overlap, see #4.
 - **On-demand file access** (#14, #15): instead of emulating the filesystem up
   front, a launcher in the ALEAPP venv replaces ALEAPP's `FileSeekerDir` by a
-  `HanskenSeeker`. Each `seeker.search(glob)` becomes an RPC to the plugin
-  (`multiprocessing.connection`, Unix socket, JSON), which turns the glob into
-  a Hansken query, filters exactly with ALEAPP's glob, and writes the hits
-  straight into ALEAPP's data folder (one copy, #12). No full listing up
-  front. The anchor is staged from `trace`; a folder hit fetches its subtree.
-  ALEAPP itself stays untouched.
+  `HanskenSeeker`. Each `seeker.search(glob)` becomes an RPC to the plugin,
+  which turns the glob into a Hansken query, filters exactly with ALEAPP's
+  glob, and writes the hits straight into ALEAPP's data folder (one copy,
+  #12). No full listing up front. The anchor is staged from `trace`; a folder
+  hit fetches its subtree. ALEAPP itself stays untouched.
+- **RPC channel** (#14, `hleapp_rpc.py`, standard library only, imported in
+  both venvs): one end of a `socketpair` is passed to the ALEAPP child
+  (`pass_fds`, fd number in `HLEAPP_RPC_FD`), so there is no socket file and
+  nothing else can connect. Length-prefixed JSON requests/replies, no pickle.
+  `run_aleapp()` serves requests on the `process()` thread (the searcher is
+  only valid there) while polling ALEAPP, kills it on `ALEAPP_TIMEOUT`, and
+  sends handler errors back as error replies. ALEAPP's output goes to
+  `aleapp.log` in the work dir instead of a pipe, so it cannot block while
+  requests are served.
 
 ## Roadmap
 Tracked as GitHub issues with priority labels, worked on as described in
