@@ -1,0 +1,3 @@
+[submodule "ALEAPP"]
+	path = ALEAPP
+	url = https://github.com/abrignoni/ALEAPP.git
