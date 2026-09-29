@@ -141,8 +141,9 @@ def run_aleapp(fs_dir, out_dir, work_dir):
 
 
 def zip_folder(folder):
+    # entries are stored, not compressed (compression level 0)
     buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_STORED) as archive:
         for dirpath, _, filenames in os.walk(folder):
             for filename in sorted(filenames):
                 path = os.path.join(dirpath, filename)

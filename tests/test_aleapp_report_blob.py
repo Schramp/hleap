@@ -77,6 +77,10 @@ def test_report_blob_is_a_valid_zip_with_the_aleapp_output(report_zip):
     assert any(name.endswith('Google Maps Directions.tsv') for name in names)
 
 
+def test_report_blob_is_stored_uncompressed(report_zip):
+    assert {info.compress_type for info in report_zip.infolist()} == {zipfile.ZIP_STORED}
+
+
 def test_report_blob_holds_the_artifact_rows(report_zip, tmp_path):
     report_zip.extractall(tmp_path)
 
