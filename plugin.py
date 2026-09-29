@@ -71,7 +71,8 @@ def materialize(trace, fs_dir):
     target = os.path.join(fs_dir, rel_path)
     os.makedirs(os.path.dirname(target), exist_ok=True)
     with open(target, 'wb') as writer:
-        if trace.get('data.raw.size', None) != 0:
+        # an empty file is still written: whether e.g. a -journal exists is part of the filesystem state
+        if trace.get('data.raw.size') != 0:
             with trace.open() as reader:
                 while chunk := reader.read(1024 * 1024):
                     writer.write(chunk)
@@ -95,17 +96,22 @@ class TraceFinder:
         self._hql_lite = hql_lite
 
     def query(self, name_glob):
+        # search results do not carry trace types, so deleted files can only be left out in the query
         if self._hql_lite:
-            return f'file.name={name_glob}'
-        # TODO verify on a real Hansken: wildcard and escaping of names with spaces or HQL characters
-        return f'file.name:{name_glob}'
+            return f'file.name={name_glob} AND NOT type:deleted'
+        # TODO verify on a real Hansken: wildcard, NOT, escaping of names with spaces or HQL characters
+        return f'file.name:{name_glob} AND NOT type:deleted'
 
     def find(self, directory, glob):
         for found in self._searcher.search(self.query(posixpath.basename(glob)), count=SEARCH_LIMIT):
             path = found.get('file.path')
             # the name query covers the whole image, keep only what ALEAPP would match in this directory
-            if path and posixpath.dirname(path) == directory and fnmatch.fnmatch('root' + path, glob):
-                yield path, found
+            if not path or posixpath.dirname(path) != directory or not fnmatch.fnmatch('root' + path, glob):
+                continue
+            if found.get('data.raw.size') is None:
+                log.info(f'{path} has no raw data, not written to the emulated filesystem')
+                continue
+            yield path, found
 
 
 def emulate_fs(trace, finder, fs_dir):
