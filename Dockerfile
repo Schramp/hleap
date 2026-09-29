@@ -5,6 +5,9 @@
 #    tox -e package -- --build-arg https_proxy=https://your-proxy
 #  if you want to pass a private Python package index:
 #     tox -e package -- --build-arg PIP_INDEX_URL=https://your-pypi-mirror
+#  if the network intercepts TLS (pip: CERTIFICATE_VERIFY_FAILED), either pass its CA via a mirror/proxy,
+#  or - INSECURE, packages are then not verified - skip certificate checks for PyPI and GitHub:
+#     tox -e package -- --build-arg PIP_TRUSTED_HOST="pypi.org files.pythonhosted.org" --build-arg GIT_SSL_NO_VERIFY=1
 
 ###############################################################################
 # Stage 1: build the plugin
@@ -12,6 +15,9 @@
 
 FROM python:3.13 AS builder
 ARG PIP_INDEX_URL=https://pypi.org/simple/
+# opt-in only, unset by default (see above); pip and git read these as environment variables during RUN
+ARG PIP_TRUSTED_HOST
+ARG GIT_SSL_NO_VERIFY
 RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 COPY requirements.txt /requirements.txt
