@@ -1,0 +1,27 @@
+{
+  "name": "Flex 2",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Slim, waterproof activity and sleep tracking wristband with progress lights.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-title": "Fitbit Flex 2",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "tracker-101-url": "https://www.fitbit.com/flex2/flex2-101",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="firstLaunchKoko" value="false" />
+    <boolean name="messagingLaunched" value="true" />
+    <int name="DataPlatformSettingsPref" value="1" />
+    <boolean name="backFromMessaging" value="true" />
+</map>

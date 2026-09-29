@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="last_activity_transition_timestamp" value="1706570838086" />
+    <boolean name="last_is_push_priority_downgraded" value="false" />
+    <boolean name="last_is_high_priority_push" value="true" />
+    <long name="last_push_timestamp" value="1722015003396" />
+</map>

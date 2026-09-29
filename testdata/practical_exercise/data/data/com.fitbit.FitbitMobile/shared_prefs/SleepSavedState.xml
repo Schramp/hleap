@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="BEDTIME_REMINDER_V2" value="true" />
+    <string name="BEDTIME_GOAL">21:45</string>
+    <boolean name="BATTERY_CHARGE_REMINDER" value="true" />
+    <set name="BEDTIME_REMINDER_DAYS_V2">
+        <string>WEDNESDAY</string>
+        <string>MONDAY</string>
+        <string>THURSDAY</string>
+        <string>SUNDAY</string>
+        <string>TUESDAY</string>
+        <string>FRIDAY</string>
+        <string>SATURDAY</string>
+    </set>
+    <int name="TIME_ASLEEP_GOAL" value="420" />
+    <string name="WAKEUPTIME_GOAL">06:30</string>
+    <string name="BEDTIME_REMINDER_TIME_V2">21:15</string>
+</map>

@@ -1,0 +1,28 @@
+{
+  "name": "Inspire 3",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body~iOS": "Health & fitness tracker\n\nBefore you start, make sure you're using the latest version of the Fitbit app.",
+  "description-body": "Health & fitness tracker",
+  "description-image-url": "images/description-image_ny.png",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-title": "Fitbit Inspire 3",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "tracker-101-url": "https://device101.fitbit.com/guides/nyota-101.html",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

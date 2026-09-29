@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="appToBackgroundCount" value="36" />
+    <long name="appToForegroundCount" value="36" />
+    <boolean name="app-to-foreground-one-time" value="true" />
+</map>

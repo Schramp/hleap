@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <set name="false_drive_detection_info_list" />
+    <set name="unprocessed_trip_info_list">
+        <string>1719670327688,A,81,[5,0,0]</string>
+        <string>1715081889220,A,81,[5,0,0]</string>
+        <string>1717866217966,A,76,[5,0,0]</string>
+    </set>
+    <string name="false_drive_detection_reason"></string>
+    <string name="trip_stop_reason"></string>
+    <string name="current_drive_detection_info"></string>
+    <int name="trip_stop_timer_id" value="1" />
+    <set name="invalid_trip_info_list" />
+</map>

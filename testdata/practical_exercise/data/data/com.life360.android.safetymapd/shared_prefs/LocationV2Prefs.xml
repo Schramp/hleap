@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="driveStrategyStartTime" value="0" />
+    <long name="lastGpiDataCollectionSentTime" value="1722125707877" />
+    <long name="lastLocationSentTime" value="1722125707878" />
+    <boolean name="backgroundRestriction" value="false" />
+    <boolean name="activityPermission" value="true" />
+    <boolean name="userPropertyBackgroundRestriction" value="false" />
+    <string name="locationPermissionStr">1</string>
+    <boolean name="batteryOptimization" value="false" />
+    <boolean name="isPowerSaveMode" value="false" />
+    <long name="heartbeatTimerTime" value="1722125707878" />
+    <boolean name="preciseLocationPermission" value="true" />
+    <boolean name="batteryOptimizationMetric" value="false" />
+    <boolean name="hidePowerSaveModeNotif" value="false" />
+    <int name="numLocationProviders" value="3" />
+    <float name="batteryLevel" value="100.0" />
+</map>

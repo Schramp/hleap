@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="PREF_PREVIOUS_POWER_BUCKET" value="-1" />
+</map>

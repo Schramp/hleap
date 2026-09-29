@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="CIRCLE_CODES_STATE_JSON_PREF_1">[{&quot;circleId&quot;:&quot;5256153e-88a0-4c1e-8e7c-fdff0301d1dd&quot;,&quot;circleName&quot;:&quot;Our DFiR Fam&quot;,&quot;code&quot;:&quot;GJRUWS&quot;,&quot;expiry&quot;:-1,&quot;matchGuaranteed&quot;:false,&quot;membersInfoList&quot;:[{&quot;avatar&quot;:&quot;https://www.life360.com/img/user_images/06d7336e-5d1c-42d4-beeb-5757704faf7f/6ce109e9-5019-424e-a841-94d18a18f325.jpeg?fd\u003d2&quot;,&quot;firstName&quot;:&quot;This Is&quot;},{&quot;avatar&quot;:&quot;https://www.life360.com/img/user_images/08674a0f-fda2-41b5-a016-a3d4b43027bd/8104b45d-da1c-4b7d-8c25-f967543f3a58.jpeg?fd\u003d2&quot;,&quot;firstName&quot;:&quot;ThisIs&quot;}],&quot;message&quot;:&quot;&quot;,&quot;state&quot;:&quot;validated_state&quot;}]</string>
+</map>

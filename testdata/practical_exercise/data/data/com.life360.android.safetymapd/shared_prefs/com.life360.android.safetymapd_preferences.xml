@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="HB_SYNC" value="true" />
+    <set name="set-of-sent-ids">
+        <string>NjM5MWY4NGI1ZTU0OWU2ZWFhODFkZjNjXyRfY2M9NGNjOGUwNTYtMjBmYy05NGU1LTAwNjYtZDY2ZmQxNTg5ZGJiJmRpJmRtJm12PTYzOTFmODRiNWU1NDllNmVhYTgxZGU2YiZvZCZwaT13ZnMmdz02MzkxZjg0YjVlNTQ5ZTZlYWE4MWRlNTkmd3A9MTcwNjU2NDgxMCZ3dj02MzkxZjg0YjVlNTQ5ZTZlYWE4MWRmMzk=</string>
+        <string>NjQwZWI5NzMyNzNiODIxN2U0NjgyMzI4XyRfY2M9MzQ2ODQwYWYtODQxNC02ZjNlLTZlM2UtZjVmNzM4ODJmZDIzJmRpJmRtJm12PTY0MGViOTczMjczYjgyMTdlNDY4MjJjYSZvZCZwaT13ZnMmdz02NDBlYjk3MzI3M2I4MjE3ZTQ2ODIyYWQmd3A9MTcwNjU2NTAxMSZ3dj02NDBlYjk3MzI3M2I4MjE3ZTQ2ODIyZjE=</string>
+        <string>NjM5MWY4NGM1ZTU0OWU2ZWFhODFkZjY2XyRfY2M9ODVmMGQ1ZjctYTU4YS01YTI0LWFhNjYtZWUzMDQyZjk4NzFjJmRpJmRtJm12PTYzOTFmODRiNWU1NDllNmVhYTgxZGU5MSZvZCZwaT13ZnMmdz02MzkxZjg0YjVlNTQ5ZTZlYWE4MWRlNTkmd3A9MTcwNjU2NDgxMCZ3dj02MzkxZjg0YjVlNTQ5ZTZlYWE4MWRmMzk=</string>
+    </set>
+    <long name="ConsolidatedAPITimeStamp" value="1722120216251" />
+    <boolean name="time_zone_changed" value="false" />
+    <string name="TripId"></string>
+    <boolean name="PREF_NOTIFICATIONS_RESET" value="true" />
+    <string name="AttributionData_Campaign">Organic</string>
+    <string name="DistractedDrivingConfigurationProd">{&quot;mergeMovementBaselineSeconds&quot;:30,&quot;angleChangeThresholdRadians&quot;:0.6,&quot;sampleFrequencyHz&quot;:1,&quot;handsFreeThreshold&quot;:3.5}</string>
+    <boolean name="PREF_DRIVING_ANALYSIS_SUPPORTED" value="true" />
+    <string name="notifi_priority_at_recording">2</string>
+    <boolean name="EXTERNAL_SENSOR_PROVIDER_SET" value="false" />
+    <string name="battery_state_on_trip_start"></string>
+    <boolean name="IS_PHONEMOVEMENT_SUPPORT_VERIFIED" value="true" />
+    <boolean name="IS_GYROSCOPE_SENSOR_AVAILABLE" value="true" />
+    <string name="CustomerId">life360-prod</string>
+    <string name="InternalConfigurationProd">{&quot;gpsTrailFrequency&quot;:15,&quot;nextKVMDownload&quot;:1440,&quot;arityBaseUrl&quot;:&quot;https://api.arity.com/drivingbehavior/v3&quot;,&quot;jobConfigs&quot;:[],&quot;enableWebServices&quot;:false,&quot;engineEnabled&quot;:true,&quot;geoLock&quot;:false,&quot;enableResearch&quot;:true,&quot;enableCollisionDetection&quot;:true,&quot;enableDataExchange&quot;:true,&quot;enableCollisionHFUpload&quot;:false,&quot;enableTripSummaryUpload&quot;:false,&quot;enableCallDetection&quot;:false,&quot;enableCourseFilter&quot;:false,&quot;enableHFD&quot;:false,&quot;realTimeGps&quot;:false,&quot;speedLimit&quot;:80,&quot;researchDataEnabled&quot;:true,&quot;c&quot;:1000}</string>
+    <float name="MIN_SPEED_START_MEMS_EVENT" value="25.0" />
+    <boolean name="AttributionData_Organic_Install" value="true" />
+    <string name="sdk_version_code">202312012</string>
+    <string name="adId">cX1O1KAae+a2eTqPZNPJgl1vowi8d9xa8DhO9zZSdI4CkvRBTHo0nxLbxd9aQTht</string>
+    <boolean name="IS_ACCELEROMETER_SENSOR_AVAILABLE" value="true" />
+    <long name="notificationTs" value="1722099605511" />
+    <string name="LatestUnProcessTrip"></string>
+    <string name="RemoteConfigSdkVersion">4240</string>
+    <int name="TOTAL_RECORDED_TRIP_COUNT" value="211" />
+    <string name="deviceLocale">US</string>
+    <boolean name="is-inbox-first-saw-braze-event-sent" value="true" />
+    <long name="NOTIFICATION_ALIVE_TIME" value="1722098578542" />
+    <boolean name="CUSTOM_CONFIG_SET" value="true" />
+    <string name="DeviceId">FsHOgLwD8Vs5/v6wvg6X5q7JzIbKsTs4hBavKEtShBSNZaVYAeYxCHkS12WWoqz0</string>
+    <string name="CollisionConfigurationProd">{&quot;accelerationMagnitudeThreshold&quot;:1.7,&quot;alphaAnomaly&quot;:0.0091,&quot;alphaAnomalyGps&quot;:0.05,&quot;altChange&quot;:-25.0,&quot;anomalyCountGps&quot;:1,&quot;anomalyRatioGps&quot;:4.0,&quot;beta0&quot;:-0.106,&quot;beta0Old&quot;:-4.84,&quot;beta1&quot;:0.0072,&quot;beta1Old&quot;:2.364,&quot;beta2&quot;:-0.0811,&quot;beta3&quot;:0.0208,&quot;beta4&quot;:0.0272,&quot;beta5&quot;:0.1535,&quot;collSuppressionSpeed&quot;:35.0,&quot;collSuppressionTime&quot;:4.0,&quot;d1&quot;:50.0,&quot;delayAfterMemsEvent&quot;:5.0,&quot;delayBeforeMemsEvent&quot;:4.5,&quot;ensembleCutOff&quot;:0.2,&quot;ensembleMean1&quot;:4.08,&quot;ensembleMean10&quot;:6.49,&quot;ensembleMean2&quot;:1.718,&quot;ensembleMean3&quot;:4.41,&quot;ensembleMean4&quot;:6.125,&quot;ensembleMean5&quot;:38.72,&quot;ensembleMean6&quot;:-10.89,&quot;ensembleMean7&quot;:11.49,&quot;ensembleMean8&quot;:6.25,&quot;ensembleMean9&quot;:5.43,&quot;ensembleTheta0&quot;:-0.915,&quot;ensembleTheta1&quot;:-0.0535,&quot;ensembleTheta10&quot;:-0.0289,&quot;ensembleTheta2&quot;:0.0074,&quot;ensembleTheta3&quot;:0.0593,&quot;ensembleTheta4&quot;:0.194,&quot;ensembleTheta5&quot;:0.046,&quot;ensembleTheta6&quot;:-4.4E-4,&quot;ensembleTheta7&quot;:-0.0297,&quot;ensembleTheta8&quot;:-0.00701,&quot;ensembleTheta9&quot;:0.00224,&quot;gamma0&quot;:-0.965,&quot;gammaA&quot;:-0.995,&quot;gammaP&quot;:0.5,&quot;gammaV&quot;:-0.115,&quot;gmmScore1&quot;:-80.0,&quot;gmmScore2&quot;:-44.0,&quot;gpsHaversineSpeedDiff&quot;:20.0,&quot;gpsLength1&quot;:30,&quot;gpsLength2&quot;:25,&quot;gpsLength3&quot;:10,&quot;gpsSpeed25Cnt&quot;:10,&quot;gpsSpeedLengthRatio1&quot;:0.5,&quot;gpsSpeedLengthRatio2&quot;:0.3,&quot;ifAccelMax&quot;:1,&quot;ifEnsemble&quot;:1,&quot;ifGpsGmm&quot;:1,&quot;ifNewL1&quot;:1,&quot;ifNewL3&quot;:1,&quot;l1Thres&quot;:0.75,&quot;l1ThresNew&quot;:0.357,&quot;l1l2Thres&quot;:0.79,&quot;l1mu1&quot;:4.126,&quot;l1mu2&quot;:1.546,&quot;l1mu3&quot;:4.263,&quot;l1mu4&quot;:34.876,&quot;l1mu5&quot;:5.798,&quot;l2NoGps&quot;:0.5,&quot;l3Mean0To20&quot;:19.59,&quot;l3Mean20To40&quot;:10.607,&quot;l3Mean40To60&quot;:6.77,&quot;l3Mean60To86&quot;:9.54,&quot;lTotThreshold&quot;:1.0,&quot;limitAnomaly&quot;:2.0,&quot;maxAlt&quot;:108.0,&quot;maxAltChange&quot;:-20.0,&quot;maxSpeedStartMemsEvent&quot;:120.0,&quot;memsWindowDuration&quot;:0.2,&quot;minPointsInMemsWindow&quot;:4,&quot;minSpeedStartMemsEvent&quot;:25.0,&quot;pAccelAnomaly&quot;:0.35,&quot;pBothHigh&quot;:0.95,&quot;pBothInt&quot;:0.2,&quot;pBothLow&quot;:0.05,&quot;pCollSuppression&quot;:0.25,&quot;pEnsembleFail&quot;:0.55,&quot;pEnsembleThreshold&quot;:0.75,&quot;pGpsAnomaly&quot;:0.45,&quot;pNeither&quot;:0.5,&quot;pNewL1Fail&quot;:0.3,&quot;pNewL3Fail&quot;:0.4,&quot;pNewL3Thres&quot;:0.4,&quot;pRollerCoaster&quot;:0.5,&quot;pSki&quot;:0.5,&quot;percentageOfPointsAboveThreshold&quot;:50.0,&quot;rcWindows&quot;:10,&quot;savedLocale&quot;:&quot;en_US&quot;,&quot;skiEnergy1&quot;:413.0,&quot;skiEnergy2&quot;:4579.0,&quot;skiL2Thres&quot;:0.5,&quot;skiTripDist1&quot;:4415.667,&quot;skiTripDist2&quot;:879.0,&quot;theta0&quot;:-0.142,&quot;theta0To20&quot;:-0.016,&quot;theta20To40&quot;:-0.0096,&quot;theta40To60&quot;:-0.00534,&quot;theta60To86&quot;:-0.0073}</string>
+    <int name="INVALID_TRIP_COUNT" value="5" />
+    <boolean name="NetworkDEMErrorState" value="false" />
+    <boolean name="IS_BAROMETER_SENSOR_AVAILABLE" value="true" />
+    <string name="RemoteConfigAppVersion">24.28.0</string>
+    <string name="AppVersion">24.28.0</string>
+    <boolean name="IS_COLLISION_SUPPORT_VERIFIED" value="true" />
+    <string name="arityToken">c5dGDxPTH4EG4d7MRCKPASLNcqlm</string>
+    <string name="sdk_version">4240</string>
+    <string name="AttributionData_MediaSource">Organic</string>
+    <string name="arityV4Token">c5dGDxPTH4EG4d7MRCKPASLNcqlm</string>
+    <int name="BatteryLevel" value="79" />
+    <string name="SAVED_CRASH_DETECTION_LIMITATIONS">[{&quot;crashDetectionEnabled&quot;:false,&quot;id&quot;:{&quot;value&quot;:&quot;5256153e-88a0-4c1e-8e7c-fdff0301d1dd&quot;}}]</string>
+    <boolean name="IS_GRAVITY_SENSOR_AVAILABLE" value="true" />
+    <boolean name="AttributionData_Sent_To_Platform" value="true" />
+    <boolean name="BatteryChargingStatus" value="false" />
+    <string name="ReferenceData">FsHOgLwD8Vs5/v6wvg6X5q7JzIbKsTs4hBavKEtShBSNZaVYAeYxCHkS12WWoqz0</string>
+    <string name="battery_state_on_trip_detect"></string>
+    <int name="RemoteConfigOSVersion" value="34" />
+    <boolean name="NetworkControllerState" value="true" />
+    <string name="ScopeToken">USVcijkFtDF2hr70WQ20f9SxmSv9yWQSao9V81oo2B0=</string>
+    <string name="UserId">FsHOgLwD8Vs5/v6wvg6X5q7JzIbKsTs4hBavKEtShBSNZaVYAeYxCHkS12WWoqz0</string>
+    <boolean name="EngineShutdownByUser" value="true" />
+    <string name="aes_key">dfKFRNlWljsCTwW03f+95KtXNdpKMIru</string>
+    <string name="SdkConfiguration">{&quot;accelerationThreshold&quot;:3.57632,&quot;airPlaneModeDuration&quot;:60,&quot;angleChangeThresholdCustomer&quot;:0.6,&quot;autoStopDuration&quot;:600,&quot;autoStopSpeed&quot;:10.0,&quot;brakingThreshold&quot;:3.17398,&quot;captureFineLocation&quot;:true,&quot;distanceForSavingTrip&quot;:5.0,&quot;enableDeveloperMode&quot;:false,&quot;gpsWarningThresholdValue&quot;:30,&quot;htAccelThreshold&quot;:0.3,&quot;isAccelerationEventSuppressionEnabled&quot;:true,&quot;isBrakingEventSuppressionEnabled&quot;:true,&quot;generateEngineActivityLog&quot;:false,&quot;maxTripRecordingDistance&quot;:1000.0,&quot;maxTripRecordingTime&quot;:25200,&quot;maxPermittedSpeed&quot;:125.0,&quot;minBatteryLevelWhileCharging&quot;:10,&quot;minBatteryLevelWhileUnPlugged&quot;:10,&quot;minSpeedToBeginTrip&quot;:15.0,&quot;minSpeedWindow&quot;:180,&quot;minTripRecordDistance&quot;:0.186411,&quot;minTripRecordTime&quot;:180,&quot;phoneMovementTimeWindow&quot;:25,&quot;phoneUsageTimeWindow&quot;:25,&quot;enableRawDataCollection&quot;:false,&quot;speedLimit&quot;:80.0}</string>
+    <string name="pref_me_map_type">Street</string>
+    <string name="RemoteConfigSdkVersionCode">202312012</string>
+    <boolean name="EngineStartedByUser" value="false" />
+</map>

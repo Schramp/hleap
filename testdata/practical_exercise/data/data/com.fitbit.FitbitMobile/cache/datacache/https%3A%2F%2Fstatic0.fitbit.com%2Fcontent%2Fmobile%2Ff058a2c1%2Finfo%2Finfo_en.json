@@ -1,0 +1,25 @@
+{
+  "name": "Aria",
+  "bluetooth-supported": false,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "We've discontinued software updates for this device. Certain features may not work as expected.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      88,
+      39,
+      107
+    ],
+    [
+      158,
+      73,
+      204
+    ]
+  ],
+  "description-title": "Fitbit Aria",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "hero-image-url": "images/hero-image.png"
+}

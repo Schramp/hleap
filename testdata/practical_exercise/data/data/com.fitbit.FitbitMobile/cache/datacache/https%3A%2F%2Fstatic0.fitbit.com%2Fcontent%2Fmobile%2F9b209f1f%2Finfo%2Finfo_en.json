@@ -1,0 +1,30 @@
+{
+  "name": "Versa",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Live your best life with Versa.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-title": "Fitbit Versa",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "accessories-gallery-url": "https://www.fitbit.com/campaign/store?goods=accessories&filters=fp-versa&utm_source=MobileClientApp&utm_medium=FitbitApp&utm_campaign=VersaAcc",
+  "accessories-gallery-url~Android": "https://www.fitbit.com/campaign/store?goods=accessories&filters=fp-versa&utm_source=AndroidApp&utm_medium=FitbitApp&utm_campaign=VersaAcc",
+  "accessories-gallery-url~iOS": "https://www.fitbit.com/campaign/store?goods=accessories&filters=fp-versa&utm_source=iOSApp&utm_medium=FitbitApp&utm_campaign=VersaAcc",
+  "tracker-101-url": "https://device101.fitbit.com/guides/versa-101.html",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

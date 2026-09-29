@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="com.google.firebase.perf.NetworkRequestSamplingRate" value="4571353999405988999" />
+    <boolean name="com.google.firebase.perf.ExperimentTTID" value="true" />
+    <float name="com.google.firebase.perf.FragmentSamplingRate" value="0.1" />
+    <boolean name="com.google.firebase.perf.SdkEnabled" value="true" />
+    <float name="com.google.firebase.perf.TraceSamplingRate" value="0.5054791" />
+    <long name="com.google.firebase.perf.TimeLimitSec" value="600" />
+    <string name="com.google.firebase.perf.LogSourceName">FIREPERF</string>
+    <string name="com.google.firebase.perf.SdkDisabledVersions"></string>
+    <long name="com.google.firebase.perf.TraceEventCountForeground" value="300" />
+    <float name="com.google.firebase.perf.SessionSamplingRate" value="0.0" />
+    <long name="com.google.firebase.perf.TraceEventCountBackground" value="30" />
+</map>

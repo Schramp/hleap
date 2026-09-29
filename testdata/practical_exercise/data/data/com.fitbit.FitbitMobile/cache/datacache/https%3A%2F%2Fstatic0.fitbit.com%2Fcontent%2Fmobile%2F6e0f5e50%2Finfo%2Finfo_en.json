@@ -1,0 +1,25 @@
+{
+  "name": "Flex",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Slim, stylish activity and sleep tracking wristband with LED progress lights.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      255,
+      81,
+      0
+    ],
+    [
+      255,
+      157,
+      0
+    ]
+  ],
+  "description-title": "Very nice.",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "hero-image-url": "images/hero-image.png"
+}

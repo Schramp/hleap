@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="DONT_USE_GATT_COMM_METRICS" value="true" />
+    <boolean name="FITBIT_DISCOVER" value="true" />
+    <boolean name="DEVICE_NOTIFICATIONS_V2_IOS" value="true" />
+    <boolean name="VO2MAX_RUN" value="true" />
+    <boolean name="DONT_USE_NOTIFICATION_COMM_METRICS" value="true" />
+    <boolean name="WEIGHT_TRENDLINE" value="true" />
+    <boolean name="DEVICE_NOTIFICATIONS_V2_ANDROID" value="true" />
+    <boolean name="CHALLENGES_MOBILE_GALLERY_2" value="true" />
+    <boolean name="FITBIT_COACH_REBRAND" value="true" />
+    <boolean name="ENABLE_COMMS_AUTODETECT_ANDROID" value="true" />
+    <boolean name="SLEEP_STAGES" value="true" />
+    <boolean name="VO2MAX_DEMOGRAPHIC" value="true" />
+    <boolean name="SOCIAL_FEED" value="true" />
+    <boolean name="DONT_USE_ADVANCED_COMM_METRICS" value="true" />
+    <boolean name="SOCIAL_FEED_USER_CREATED_GROUPS" value="true" />
+    <boolean name="SLEEP_CONSISTENCY" value="true" />
+    <boolean name="USER_SECURITY_MFA" value="true" />
+    <boolean name="FITBIT_NOW" value="true" />
+    <boolean name="DONT_USE_BITGATT_INIT_METRICS" value="true" />
+    <boolean name="LEADERSHIP_CHALLENGE_RESULTS_LEADER" value="true" />
+    <boolean name="DONT_USE_MOBILE_DATA_COMM_METRICS" value="true" />
+    <boolean name="DONT_USE_BOND_COMM_METRICS" value="true" />
+    <boolean name="SEDENTARY_TIME" value="true" />
+    <boolean name="DONT_USE_CONNECTION_COMM_METRICS" value="true" />
+    <boolean name="DONT_USE_WIFI_SETUP_COMM_METRICS" value="true" />
+    <boolean name="FITBIT_HOME" value="true" />
+    <boolean name="MINERVA" value="true" />
+    <boolean name="DONT_USE_APP_SYNC_COMM_METRICS" value="true" />
+    <boolean name="MINERVA_TRENDS" value="true" />
+    <boolean name="LEADERSHIP_CHALLENGE_RESULTS_PARTICIPANT" value="true" />
+    <boolean name="NOTIFICATION_CENTER" value="true" />
+    <long name="LAST_REFRESH_TIME" value="7319407" />
+    <boolean name="DONT_USE_SYNC_COMM_METRICS" value="true" />
+    <boolean name="INSIGHTS" value="true" />
+</map>

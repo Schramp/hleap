@@ -1,0 +1,26 @@
+{
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Track weight, BMI and body fat percentage. Auto-sync up to 8 users with Wi-Fi.",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-image-url": "images/description-image.png",
+  "description-title": "Fitbit Aria 2.",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "name": "Aria 2",
+  "tracker-101-url": "https://device101.fitbit.com/guides/aria2-101.html",
+  "hero-image-url": "images/hero-image.png"
+}

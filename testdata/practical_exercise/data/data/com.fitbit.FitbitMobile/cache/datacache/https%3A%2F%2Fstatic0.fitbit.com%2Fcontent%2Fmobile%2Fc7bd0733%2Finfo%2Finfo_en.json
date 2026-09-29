@@ -1,0 +1,28 @@
+{
+  "name": "Versa 4",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/small_device_render_440x440_hr.png",
+  "description-body~iOS": "Health and fitness smartwatch\n\nBefore you start, make sure you're using the latest version of the Fitbit app.",
+  "description-body": "Health and fitness smartwatch",
+  "description-image-url": "images/hero_image_720x720_mgn.png",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-title": "Fitbit Versa 4",
+  "image-url": "images/image_url_220x220_hr.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "tracker-101-url": "https://device101.fitbit.com/guides/hera-101.html",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

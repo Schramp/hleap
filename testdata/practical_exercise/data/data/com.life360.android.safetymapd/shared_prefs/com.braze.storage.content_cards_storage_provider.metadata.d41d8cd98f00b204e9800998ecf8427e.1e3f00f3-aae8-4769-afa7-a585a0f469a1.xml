@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <set name="dismissed" />
+    <long name="last_full_sync_at" value="1706564669" />
+    <set name="expired" />
+    <string name="last_accessed_sdk_version">24.3.0</string>
+    <long name="last_card_updated_at" value="0" />
+    <long name="last_storage_update_timestamp" value="1706564671" />
+</map>

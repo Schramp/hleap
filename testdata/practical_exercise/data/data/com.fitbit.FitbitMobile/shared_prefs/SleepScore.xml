@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="is_grant_access" value="true" />
+    <boolean name="is_premium_available_for_purchase" value="true" />
+    <boolean name="sleep_score_grant_access_has_been_set" value="true" />
+    <boolean name="is_premium_access" value="false" />
+    <boolean name="is_premium_eligible" value="true" />
+</map>

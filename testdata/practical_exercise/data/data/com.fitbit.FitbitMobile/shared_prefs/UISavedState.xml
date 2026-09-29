@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="SHOULD_SHOW_ACCOUNT_NOW_SPACE" value="false" />
+    <boolean name="SHOULD_SHOW_BAT_ONBOARDING_TILE" value="false" />
+    <long name="APP_LAST_START_OR_ENTER_FOREGROUND_DATE" value="1720922508634" />
+</map>

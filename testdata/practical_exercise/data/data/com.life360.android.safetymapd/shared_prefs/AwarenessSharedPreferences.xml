@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="startBleRequestTime" value="1722125706206" />
+    <long name="powerModeLastSentTime" value="1722084431934" />
+    <long name="nextBleRequestTime" value="1722129236742" />
+    <long name="failedLocationLastSentTime" value="1718694159515" />
+    <long name="lastBleRequestTime" value="1722129201717" />
+</map>

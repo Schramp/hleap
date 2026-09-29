@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="tooltip state_location_LOCATION_MEMBERSHIP_TAB">cleared</string>
+    <long name="tooltip display count_location_LOCATION_MEMBERSHIP_TAB" value="0" />
+</map>

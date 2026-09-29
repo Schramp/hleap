@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="fcd_promotion_cell_closed_5256153e-88a0-4c1e-8e7c-fdff0301d1dd" value="true" />
+    <int name="TURN_ON_FREE_CRASH_DETECTION" value="2" />
+    <boolean name="denali-walk-viewed" value="true" />
+    <boolean name="dba_onboarded-5256153e-88a0-4c1e-8e7c-fdff0301d1dd" value="true" />
+    <boolean name="koko-viewed" value="true" />
+</map>

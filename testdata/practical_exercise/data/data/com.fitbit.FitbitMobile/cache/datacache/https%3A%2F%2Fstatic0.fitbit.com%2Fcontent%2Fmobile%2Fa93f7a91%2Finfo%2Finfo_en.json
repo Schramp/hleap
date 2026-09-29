@@ -1,0 +1,59 @@
+{
+  "name": "Ionic",
+  "bluetooth-supported": true,
+  "caption": "",
+  "deviceEditions": {
+    "adidas": {
+      "description-image-url": "images/description-image-superstar.png",
+      "description-gradient": [
+        [
+          23,
+          24,
+          31
+        ],
+        [
+          93,
+          103,
+          125
+        ]
+      ],
+      "description-title": "Fitbit Ionic: adidas edition",
+      "choose-tracker-image-url": "images/choose-tracker-image-superstar.png",
+      "name": "Ionic: adidas edition",
+      "description-body": "Commit to extraordinary.",
+      "tracker-101-url": "https://device101.fitbit.com/guides/ionic-ae-101.html",
+      "image-url": "images/image-superstar.png"
+    }
+  },
+  "changesets": {
+    "superstar": {
+      "type": "tracker-edition",
+      "criteria": "adidas"
+    }
+  },
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "The watch designed for your life.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-title": "Fitbit Ionic",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "accessories-gallery-url": "https://www.fitbit.com/campaign/store?goods=accessories&filters=fp-ionic&utm_source=MobileClientApp&utm_medium=FitbitApp&utm_campaign=IonicAcc",
+  "accessories-gallery-url~Android": "https://www.fitbit.com/campaign/store?goods=accessories&filters=fp-ionic&utm_source=AndroidApp&utm_medium=FitbitApp&utm_campaign=IonicAcc",
+  "accessories-gallery-url~iOS": "https://www.fitbit.com/campaign/store?goods=accessories&filters=fp-ionic&utm_source=iOSApp&utm_medium=FitbitApp&utm_campaign=IonicAcc",
+  "tracker-101-url": "https://device101.fitbit.com/guides/ionic-101.html",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

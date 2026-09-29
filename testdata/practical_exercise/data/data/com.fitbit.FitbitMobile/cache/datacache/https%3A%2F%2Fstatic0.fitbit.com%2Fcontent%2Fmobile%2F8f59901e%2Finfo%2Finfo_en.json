@@ -1,0 +1,37 @@
+{
+  "name": "Ace 2",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Set Up Ace 2\n\nWhen you set up Ace 2, be sure you are using the phone or tablet you would like it to connect to.\n\nAfter tapping “Continue,” you will:\n\n1. Make a Fitbit account if you haven't already done so.\n\n2. Create a family account if you don't have one.\n\n3. Add a new child or select an existing one.\n\n4. Switch to kid view to complete setup for your child's Ace 2.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      38,
+      38,
+      107
+    ],
+    [
+      75,
+      74,
+      204
+    ]
+  ],
+  "description-title": "Important! Please Read",
+  "description-override": {
+    "adult-gaia": {
+      "description-title": "Set up Ace 2",
+      "description-body": "On this phone\nGo to your Family, switch to your child’s profile, and add an Ace 2 device\n\nOn your child’s phone\nSign in to Fitbit with your child’s Google Account, and add an Ace 2 device"
+    },
+    "child-gaia": {
+      "description-title": "Get help from a parent",
+      "description-body": "Give your device to the parent who is a Google family manager. They can help you do the next step."
+    }
+  },
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "tracker-101-url": "https://device101.fitbit.com/guides/ace2-101.html",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

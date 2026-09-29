@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="afib_ppg_state_onboarded" value="false" />
+    <boolean name="afib_ppg_state_enrolled" value="false" />
+    <boolean name="afib_ppg_heart_tile_entry" value="false" />
+    <boolean name="afib_ppg_state_consented" value="false" />
+    <long name="afib_ppg_state_expired_time" value="1706466305279" />
+    <long name="afib_ppg_expired_time" value="1706466305103" />
+    <boolean name="afib_ppg_state_eligible" value="false" />
+</map>

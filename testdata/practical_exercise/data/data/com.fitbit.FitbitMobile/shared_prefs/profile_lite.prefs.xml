@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="avatarUrl">https://static0.fitbit.com/images/profile/defaultProfile_150.png</string>
+    <string name="displayName">Liz D.</string>
+    <string name="encodedId">BX2M9G</string>
+    <boolean name="child" value="false" />
+</map>

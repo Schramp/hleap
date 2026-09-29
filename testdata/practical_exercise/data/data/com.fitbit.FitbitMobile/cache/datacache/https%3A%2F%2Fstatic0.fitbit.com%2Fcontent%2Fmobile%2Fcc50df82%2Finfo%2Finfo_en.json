@@ -1,0 +1,25 @@
+{
+  "name": "Zip",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "A fun and stylish all-day activity tracker with an amazing 4 to 6 month battery life.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      57,
+      128,
+      0
+    ],
+    [
+      127,
+      207,
+      0
+    ]
+  ],
+  "description-title": "Heck yeah.",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "hero-image-url": "images/hero-image.png"
+}

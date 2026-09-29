@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="PREF_SDK_STATE_UPDATED_ON_PLATFORM" value="3" />
+    <string name="PREF_DRIVER_BEHAVIOR_CURRENT_FILE_NAME_3">rawDataExchange_summary1722099605482.json</string>
+    <string name="PREF_DRIVER_BEHAVIOR_CURRENT_FILE_NAME_1">6a4d8df5b9ba4b138e889c78e1eb32d5.json</string>
+    <boolean name="PREF_COLLISION_DETECTION_ENABLED" value="true" />
+    <long name="PREF_DRIVER_BEHAVIOR_CURRENT_FILE_CREATED_3" value="1722099605495" />
+    <string name="PREF_DRIVERSITI_USERID">92e631a5b5a8ea5f6436785eaa9b68c03719a11e</string>
+    <boolean name="PREF_DEVICE_SUPPORT" value="true" />
+    <boolean name="PREF_HAS_CRASH_DETECTION_PREMIUM_FEATURE" value="false" />
+    <boolean name="PREF_DRIVER_BEHAVIOR_SDK_LOGGED_IN" value="true" />
+    <long name="PREF_DEVICE_SUPPORT_CHECKED_TIME" value="1706564812047" />
+    <long name="PREF_DRIVER_BEHAVIOR_CURRENT_FILE_CREATED_1" value="1722099605529" />
+</map>

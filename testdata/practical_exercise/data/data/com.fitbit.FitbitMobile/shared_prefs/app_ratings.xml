@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="last-device-rating-score-refresh" value="1722045802278" />
+    <long name="NEXT_USER_DAY" value="1726358400000" />
+    <string name="supported_store_key">com.android.vending</string>
+    <long name="last_user_login_timestamp_key" value="1706227200000" />
+</map>

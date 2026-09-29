@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="serving_cell_info">20;4467183637;5237760;63;1722125654447</string>
+    <string name="bssid_scan_info">78:67:0e:0b:3d:d8&lt;=&gt;2a:03:eb:98:79:d7&lt;=&gt;1722100562909&lt;=&gt;8&lt;=&gt;-49</string>
+    <long name="last_activity_update_time" value="1722125654454" />
+    <boolean name="last_activity_is_still" value="true" />
+    <set name="previous_cells_info">
+        <string>20;4467183617;5237760;87;1722116509130</string>
+        <string>20;5472571395;5237760;63;1722120461814</string>
+    </set>
+    <long name="servingCellCleanupTime" value="1722129188223" />
+</map>

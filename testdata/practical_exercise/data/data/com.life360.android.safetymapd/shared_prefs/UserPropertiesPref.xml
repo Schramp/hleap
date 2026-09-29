@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="observabilityEngineEnabled" value="true" />
+    <int name="in_app_update_staleness_threshold_in_days" value="365" />
+    <boolean name="dataPartners_popup_enable" value="false" />
+    <boolean name="location_logging_enabled" value="false" />
+    <boolean name="isLeadGenWebViewPrefetchEnabled" value="false" />
+    <boolean name="events_multi_process_kill_switch" value="true" />
+    <boolean name="memberFirstLocationThresholdExceededEnabled" value="true" />
+    <boolean name="structuredLogDataUpload" value="false" />
+    <int name="failed_mqtt_polling_interval" value="15" />
+    <int name="dvb_arityP3_value" value="83" />
+    <int name="fallback_refresh_second_mark" value="8" />
+    <boolean name="ble_to_tile_enabled" value="false" />
+    <boolean name="p2p_default_ip_address_api_enabled" value="false" />
+    <boolean name="gpi_stop_sending_bluetooth_scan_locations" value="false" />
+    <boolean name="messaging-disable-pubnub" value="true" />
+    <boolean name="breadcrumb_tracking_enabled" value="false" />
+    <boolean name="dvb_arityGyroscope_enable" value="false" />
+    <string name="MembershipTab_experiment_monthlyAnnualRouting">membership_control</string>
+    <int name="gpiWifiScanResultMaxSize" value="5" />
+    <boolean name="auto_enable_fcd_settings_experience_enabled" value="false" />
+    <boolean name="ble_metric_enabled" value="false" />
+    <boolean name="location_update_freq_refactoring_enabled" value="false" />
+    <boolean name="flq_session_metric_enabled" value="false" />
+    <int name="advertisements_min_account_days" value="21" />
+    <int name="driveSummaryCopy" value="1" />
+    <float name="srtStartAccuracyThreshold" value="250.0" />
+    <boolean name="settings_cancel_subscription_enabled" value="false" />
+    <boolean name="ble_scan_mode_setting_enabled" value="true" />
+    <boolean name="release_privacy_manifest_api" value="false" />
+    <string name="cdlVideoUrl">https://static.life360.com/mobile/autoenable_crash_detection/crash-detection-video_en.mp4</string>
+    <string name="sos_button_state_experiment">assignedControl</string>
+    <boolean name="crashDetection_automatedCollisionResponse_enable" value="true" />
+    <boolean name="client_verification_phase1_enabled" value="false" />
+    <boolean name="track_map_marker_error_enabled" value="false" />
+    <boolean name="gpi_smart_real_time_data_collection_enabled" value="true" />
+    <boolean name="profileInteractor_refactoring_kill_switch" value="false" />
+    <boolean name="history-places-migration-enabled" value="true" />
+    <int name="location_logs_retention_time" value="2" />
+    <boolean name="dvbRawDataForwarding" value="true" />
+    <boolean name="network_ttl_enable" value="false" />
+    <boolean name="coordinationAnalytics_enable" value="false" />
+    <boolean name="passwordless_mobile_force_users_to_verify" value="false" />
+    <boolean name="pin_native_marker_rendering_enabled" value="false" />
+    <boolean name="genesis_engine_metric_event_sending_enable" value="false" />
+    <boolean name="observability_engine_metrics_enable" value="false" />
+    <string name="badging_tabs_experiment_new_users">notTargeted</string>
+    <int name="memberFirstLocationThresholdExceededThreshold" value="7500" />
+    <boolean name="structured_logging_remote_retrieval_enabled" value="false" />
+    <boolean name="crime_mapGrandfather_enable" value="true" />
+    <string name="remove_messaging_experiment">notTargeted</string>
+    <boolean name="gpi_data_collection_disabled" value="false" />
+    <boolean name="persona_id_verification_enabled" value="true" />
+    <boolean name="fixCrashPremiumCalculation_driverSdk_enabled" value="false" />
+    <boolean name="gpi_drive_data_collection_enabled" value="false" />
+    <string name="PopDwells2">DefaultControl</string>
+    <string name="idp_gold_removal_experiment">notTargeted</string>
+    <string name="non-payer_post_purchase_flow">none</string>
+    <boolean name="membership_monthly_intro_offer_configuration_enabled" value="true" />
+    <boolean name="cap_place_self_user_update_enabled" value="false" />
+    <string name="jiobit_experiment_upsellHook">fallback</string>
+    <string name="autoRenewDisabledUI">MembershipTabOnTap</string>
+    <boolean name="time_based_retention_for_location_logs_enabled" value="false" />
+    <boolean name="cap_low_battery_alert_enabled" value="true" />
+    <string name="pin_freshness_experiment">notTargeted</string>
+    <string name="dispatch_removal_experiment">removed</string>
+    <string name="fake-fue-experiment">Default App</string>
+    <string name="PopDwells">DefaultControl</string>
+    <boolean name="casper_migrateToLaunchDarkly_enable" value="false" />
+    <boolean name="cap_place_breach_alert_enabled" value="false" />
+    <boolean name="fclp_dwell_detection_enabled" value="false" />
+    <boolean name="arity_v4_enabled" value="true" />
+    <boolean name="all_circles_on_map_enabled" value="false" />
+    <float name="srtMaxAccuracyThreshold" value="250.0" />
+    <boolean name="in_app_updates_enabled" value="false" />
+    <boolean name="network_aggregation_upload_enable" value="false" />
+    <string name="member_focus_mode_place_alerts_experiment">toggle</string>
+    <boolean name="app_and_circle_receipt_of_sos_kill_switch" value="true" />
+    <boolean name="velocity-experiment-rate-the-app-dialog-frequency" value="false" />
+    <boolean name="ble_rescheduling_disabled" value="false" />
+    <boolean name="driveStrategySampleUploadFrequency15Seconds" value="true" />
+    <boolean name="gpi_stop_sending_foreground_update_ui_locations" value="false" />
+    <string name="post_purchase_trial_education_23">none</string>
+    <boolean name="ble_nearby_devices_ble_provider_enabled" value="true" />
+    <boolean name="data_breach_alerts_outside_north_america_enabled" value="false" />
+    <boolean name="tile_focus_mode_bottom_sheet_enabled" value="false" />
+    <boolean name="locationDecorationEnabled" value="true" />
+    <boolean name="advertisements_enabled" value="true" />
+    <boolean name="arity20MphCollisionSpeed" value="false" />
+    <string name="billboard_card_experiment_feature_activation">notTargeted</string>
+    <boolean name="dvb_rawDataLogs_enable" value="false" />
+    <int name="advertisements_experiment_ad_carousel_slow_down" value="5000" />
+    <boolean name="useSensorFrameworkInLocationEngine" value="false" />
+    <boolean name="inbox-enabled" value="true" />
+    <boolean name="sos_outside_north_america_enabled" value="false" />
+    <boolean name="network_aggregation_enable" value="false" />
+    <int name="members-devices-polling-interval" value="45" />
+    <boolean name="soba_show_jiobit_enabled" value="false" />
+    <boolean name="zendesk_combined_instance_enabled" value="true" />
+    <boolean name="location_sendMetric_enable" value="false" />
+    <boolean name="arity_default_notification_priority_kill_switch" value="false" />
+    <boolean name="nearby_devices_reverse_ring_enabled" value="false" />
+    <string name="native_pins_experiment">native</string>
+    <boolean name="cap_send_to_gpi_enabled" value="true" />
+    <boolean name="metrics_upload_enable" value="false" />
+    <int name="appboySessionTimeoutSeconds" value="300" />
+    <boolean name="network_status_enable" value="false" />
+    <string name="crash_detection_activation_pin">notTargeted</string>
+    <int name="in_app_update_priority" value="1" />
+    <boolean name="dvb_trackDetectionBanner_enable" value="false" />
+    <string name="ble_service_uuids">feed</string>
+    <string name="map_ad_experiment_enabled">summer-promo-pin-trial</string>
+    <string name="sos_trigger_button_experiment">notTargeted</string>
+    <string name="inbox_experiment_icon_type">control</string>
+    <string name="tooltips_experiment_growth2023">membership_tab_and_sos_billboard_card</string>
+    <boolean name="velocity-s4-billboard-card-rib-refactor" value="false" />
+    <int name="location_defaultUpdateFrequencyInSeconds_value" value="600" />
+    <boolean name="sensorFrameworkUniqueComponentsKillSwitch" value="false" />
+    <boolean name="events_kit_early_initialization_kill_switch" value="false" />
+    <int name="srt_strategy_age_threshold_seconds" value="0" />
+    <string name="PostAuthExperimentTriage">ExperimentVariant</string>
+    <int name="post_login_dob_user_creation_date_threshold" value="-1" />
+    <boolean name="fallback_refresh_enabled" value="true" />
+    <boolean name="dob-and-age-verification" value="true" />
+    <boolean name="ble_scheduler_2_enabled" value="true" />
+    <boolean name="heartbeat_disabled" value="false" />
+    <boolean name="gpiRequiredWifiScanResultEnabled" value="true" />
+    <int name="ble_scan_mode_setting" value="2" />
+    <boolean name="flight_detectionSamplingUpdate_enabled" value="true" />
+    <boolean name="srtStrategy25SecondDuration" value="false" />
+    <boolean name="memberMapUpdateEventMonitorMetricsEnabled" value="true" />
+    <boolean name="latest_google_map_renderer_killswitch" value="true" />
+    <string name="web_reset_password_migration">https://app.life360.com/reset-password</string>
+    <boolean name="gpi1_sent_metric_enabled" value="true" />
+    <boolean name="ble_scan_enabled" value="true" />
+    <boolean name="landing_ui_settings_enabled" value="true" />
+    <boolean name="age_gating_allow_dob_change_enabled" value="false" />
+    <int name="mqtt_location_emission_delay_in_millis" value="100" />
+    <string name="billboard_dismissal_logic">none</string>
+    <string name="place_alerts_limit_ui_enabled">pick_2_places</string>
+    <boolean name="structured_logging_enable" value="true" />
+    <boolean name="appboySessionTimeoutEnabled" value="true" />
+    <boolean name="gpi_send_all_move_lmode_locations_enabled" value="false" />
+    <boolean name="velocity-experiment-use-system-phone-and-message" value="false" />
+    <boolean name="observability_engine_scope_cleanup_enabled" value="false" />
+    <boolean name="double_subscription_prevention_enabled" value="true" />
+    <boolean name="gpi1_drop_400_events" value="false" />
+    <boolean name="ip_geo_phase1b_enabled" value="false" />
+    <boolean name="fclp_send_failed_locations_to_gpi_enabled" value="true" />
+    <boolean name="passwordless_mobile_settings_verify_phone" value="true" />
+    <boolean name="bounceOutDetected" value="false" />
+    <float name="srtTimeoutAccuracyThreshold" value="250.0" />
+    <boolean name="highVolumeEvents" value="false" />
+    <boolean name="shakeForFeedback_enable" value="false" />
+    <int name="cap_gpi1_batch_size" value="100" />
+    <boolean name="leadgen_enabled" value="true" />
+    <boolean name="events_multi_process_enabled" value="true" />
+    <boolean name="landing_ui_map_enabled" value="true" />
+    <boolean name="auto_enable_fcd_experience_enabled" value="false" />
+    <boolean name="handle_landing_push_enabled" value="true" />
+    <boolean name="free_crash_detection_outside_north_america_enabled" value="false" />
+    <boolean name="ble_disable_scan_if_tile_app_is_installed" value="false" />
+    <boolean name="gpi_android_new_activity_events" value="false" />
+    <string name="day_detail_view_experiment">notTargeted</string>
+    <boolean name="arity_handle_driving_false_positive" value="false" />
+    <boolean name="cap_location_allow_list_enabled" value="false" />
+    <int name="mcno_experiment_location_interval_mode_sampling_interval" value="0" />
+    <string name="fue_experiment_maybe_later">notTargeted</string>
+    <boolean name="dvb_arityBarometer_enable" value="true" />
+    <string name="DailyWeeklyPriceFraming_experiment_FUE">notTargeted</string>
+    <string name="tile_shop_tiles_url_parameters">https://www.tile.com/products/deals?inapp=1&amp;app=1&amp;hideinappnav=1&amp;utm_source=Life360&amp;utm_medium=app&amp;utm_campaign=life360-app&amp;utm_content=in-app</string>
+    <boolean name="location_interval_mode_sampling_interval_enabled" value="false" />
+    <boolean name="network_stats_enabled" value="false" />
+    <boolean name="circle_switcher_tooltip" value="false" />
+    <boolean name="pillar_map_pin_tracker_enabled" value="false" />
+    <string name="cdlHelpCenterUrl">https://support.life360.com/hc/en-us/articles/360041746893-Life360-Free-Crash-Detection</string>
+    <boolean name="labs_enabled" value="false" />
+    <string name="speeding_alerts_painted_door_experiment">notTargeted</string>
+    <boolean name="client_verification_phase1_pre_auth_enabled" value="false" />
+    <string name="membership_tab_experiment_monthly_annual_routing_v2">default_control</string>
+    <int name="nearby_devices_nearby_max_age_seconds" value="20" />
+    <boolean name="android-clear-all-preference-on-logout" value="true" />
+    <boolean name="get_app_foreground_status_from_am" value="false" />
+    <boolean name="mapAdEnabled" value="false" />
+    <boolean name="gpi_android_rate_limiter_enabled" value="false" />
+    <string name="sos_experiment_premium_upsell">not_targeted</string>
+    <boolean name="post_purchase_catch_all_enable" value="true" />
+    <string name="membershipTab_experiment_copyChange">notTargeted</string>
+    <boolean name="direct_metric_enabled" value="true" />
+    <string name="persona_id_verification_template_id">itmpl_YQSDscdMumrE16tyeAVJq6b8AqPz</string>
+    <string name="dynamicBaseUrl"></string>
+    <boolean name="in_app_update_metrics_enabled" value="false" />
+    <boolean name="flight_detection_enabled" value="true" />
+    <int name="dvb_arityP1_value" value="20" />
+    <string name="silverPlatinum_experiment_ageRouting">none</string>
+    <int name="mcno_experiment_call_interval" value="604800" />
+    <boolean name="network_status_upload_enable" value="false" />
+    <boolean name="ble_to_gpi_enabled" value="true" />
+    <boolean name="soba_jiobit_ble_activation_enabled" value="false" />
+    <string name="membership_tab_tooltip_experiment_INTL">NotTargeted</string>
+    <boolean name="crashDetection_limtations_enable" value="true" />
+    <boolean name="movement_status_phase_2_enabled" value="true" />
+    <string name="places_setup_in_post_purchase_flow">places_setup_shown</string>
+    <boolean name="locationHealthEnabled" value="false" />
+    <boolean name="battery_tracking_enabled" value="false" />
+    <boolean name="iap_experiment_removeUnsafeUsageOfBillingClient" value="false" />
+    <boolean name="debugOptions_enable" value="false" />
+    <int name="mcno_experiment_places_polling" value="129600" />
+    <boolean name="fileLoggerEnabled" value="false" />
+    <int name="ble_scan_duration" value="30" />
+    <int name="dvb_arityP2_value" value="70" />
+    <boolean name="arity_handle_driving_false_negative" value="false" />
+    <boolean name="passwordless_mobile_settings_verify_email" value="false" />
+    <string name="membershipTab_experiment_priceRounded">notTargeted</string>
+    <string name="safety_tab_tooltip_experiment_INTL">NotTargeted</string>
+    <boolean name="ada_chatbot_enabled" value="true" />
+    <int name="ble_scan_interval" value="35" />
+    <string name="nearby_devices_ring_tile_focus_mode_enabled">disabled</string>
+</map>

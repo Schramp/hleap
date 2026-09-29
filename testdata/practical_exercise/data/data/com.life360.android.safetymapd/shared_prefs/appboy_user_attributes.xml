@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="viewed_optimus_prime" value="true" />
+    <string name="0c6fb46d-f9b4-47d1-84eb-d580999feb37">{&quot;activeCircleTileCount&quot;:0,&quot;circleCount&quot;:1,&quot;email&quot;:&quot;ldehner505@gmail.com&quot;,&quot;firstName&quot;:&quot;Liz&quot;,&quot;isActiveCircleBatteryNotificationsEnabled&quot;:true,&quot;isActiveCircleDriveNotificationsEnabled&quot;:false,&quot;isAdmin&quot;:false,&quot;isFcdAutoEnabled&quot;:false,&quot;isOptimusPrime&quot;:true,&quot;isPhoneVerificationEnabled&quot;:true,&quot;isPhoneVerified&quot;:true,&quot;isQuickNotesEnabled&quot;:true,&quot;isTileExperienceEnabled&quot;:true,&quot;lastUpdated&quot;:1713876863244,&quot;memberCount&quot;:3,&quot;placeCount&quot;:2,&quot;updateCount&quot;:21}</string>
+</map>

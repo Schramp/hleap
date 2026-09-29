@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <float name="AWAKE_RESTLESS_PERCENTAGE" value="0.031632528" />
+    <int name="TYPICAL_DURATION_MINUTES" value="446" />
+    <long name="LAST_UPDATE_TIME_MS" value="1720922267895" />
+    <int name="FLOW_ID" value="1" />
+    <int name="RECOMMENDED_SLEEP_GOAL_MINUTES" value="465" />
+    <string name="TYPICAL_WAKEUP_TIME">06:32</string>
+</map>

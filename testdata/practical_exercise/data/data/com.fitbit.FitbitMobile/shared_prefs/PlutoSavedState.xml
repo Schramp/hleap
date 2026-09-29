@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="FAMILY_MAXIMUM_MEMBERS_NUMBER" value="0" />
+    <boolean name="FAMILY_DATA_RETRIEVED" value="true" />
+    <boolean name="CHILD_MODE_ACTIVE" value="false" />
+</map>

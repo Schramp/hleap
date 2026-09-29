@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="com.life360.android.awarenessengineapi.topic.fact.PowerTopic" value="1721601367142" />
+    <long name="com.life360.android.awarenessengineapi.topic.sysrequest.SystemRequestTopic" value="1722137472612" />
+    <long name="com.life360.android.awarenessengineapi.topic.syserror.SystemErrorTopic" value="1722126869672" />
+    <long name="com.life360.android.eventskit.trackable.StructuredLogTopic" value="1722137053569" />
+    <long name="com.life360.android.awarenessengineapi.topic.fact.LocationTopic" value="1721601366923" />
+    <long name="com.life360.android.awarenessengineapi.topic.fact.AccessTopic" value="1722129676828" />
+    <long name="com.life360.android.awarenessengineapi.topic.fact.PowerModeTopic" value="1722074507666" />
+    <long name="com.life360.android.awarenessengineapi.topic.outbound.OutboundTopic" value="1722099263304" />
+    <long name="com.life360.android.awarenessengineapi.topic.fact.FailedLocationTopic" value="1722126869685" />
+</map>

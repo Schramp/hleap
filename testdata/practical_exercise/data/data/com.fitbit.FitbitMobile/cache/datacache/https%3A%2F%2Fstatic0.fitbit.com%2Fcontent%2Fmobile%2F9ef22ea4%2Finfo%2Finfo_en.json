@@ -1,0 +1,26 @@
+{
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Smart Scale",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-image-url": "images/fitbitBowieFrontWhiteShadow.png",
+  "description-title": "Fitbit Aria Air",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "name": "Aria Air",
+  "tracker-101-url": "https://device101.fitbit.com/guides/aria-air-101.html",
+  "hero-image-url": "images/hero-image.png"
+}

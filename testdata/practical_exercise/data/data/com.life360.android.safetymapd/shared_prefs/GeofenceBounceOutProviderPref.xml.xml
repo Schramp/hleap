@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="PREF_LOCAL_GEOFENCING_UPDATE_TIME" value="1722137473704" />
+    <long name="PREF_PLATFORM_GEOFENCE_REFRESH_TIME" value="1722122503474" />
+    <long name="PREF_LOCAL_GEOFENCING_SWITCHOVER_TIME" value="1706564974669" />
+</map>

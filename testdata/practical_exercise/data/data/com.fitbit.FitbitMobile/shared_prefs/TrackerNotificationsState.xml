@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="sms.enabled" value="false" />
+    <boolean name="tel.enabled" value="false" />
+    <boolean name="calendar.enabled" value="false" />
+</map>

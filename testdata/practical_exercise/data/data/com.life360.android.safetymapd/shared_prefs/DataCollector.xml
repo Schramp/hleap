@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="last_collection_time_millis_Device" value="1722125706215" />
+    <long name="last_collection_time_millis_Environment" value="1722129201813" />
+    <long name="last_collection_time_millis_Language" value="1722125706227" />
+    <long name="last_collection_time_millis_NetworkTraffic" value="1722129201840" />
+    <long name="last_collection_time_millis_User" value="1722125706227" />
+    <long name="last_collection_time_millis_Location" value="1722129201840" />
+    <long name="last_collection_time_millis_Power" value="1722129201801" />
+    <long name="last_collection_time_millis_WiFi" value="1722129201813" />
+    <long name="last_collection_time_millis_ScanResults" value="1722128030671" />
+    <long name="last_collection_time_millis_Statistics" value="1722129201840" />
+    <long name="last_collection_time_millis_Activity" value="1722129201840" />
+    <long name="last_collection_time_millis_Cell" value="1722129201794" />
+</map>

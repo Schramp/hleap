@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <set name="legacy_features">
+        <string>healthy_pet_early_access_2</string>
+        <string>afibppg_enrollment_now_65</string>
+        <string>app_launch_steps_fsc</string>
+        <string>covid19_tab_disable_override_switch_iOS</string>
+        <string>blood_glucose_enrollment_now</string>
+        <string>healthy_pet_early_access</string>
+        <string>afib-ppg</string>
+        <string>covid_survey_now_card</string>
+    </set>
+    <set name="legacy_experiments">
+        <string>discover_app_gallery_test</string>
+        <string>core_streaks_iOS_feature_test</string>
+        <string>android_setup_flow_feature_test</string>
+        <string>premium_logo_and_badging_Android_test</string>
+        <string>program-launch-nutrition-lower-cholesterol</string>
+        <string>core_streaks_iOS_v2_feature_test</string>
+        <string>integrated_insights_feature_test</string>
+        <string>assessments_and_reports_bundle_feature_test</string>
+        <string>social_shareable_groups</string>
+        <string>dynamic_guidance_han_cross_platform_feature_05_20_2020_v1_0_test</string>
+        <string>Device_Setup_Premium_Upsell_Test</string>
+        <string>Explore_Premium_in_tabbar_and_account_test</string>
+        <string>tailored_challenge_experiment</string>
+        <string>discover_content_premium_test</string>
+        <string>premium_activation_header_copy_test</string>
+        <string>today_on_system_feature_test</string>
+        <string>improved_upsell_feature_test</string>
+        <string>insights_via_push_notifications_experiment_external</string>
+        <string>recipe_in_food_tile_feature_test</string>
+        <string>forced_fwup_education_view_test</string>
+        <string>discover_workout_ver1_test</string>
+        <string>insights_covid</string>
+        <string>premium_logo_and_badging_iOS_test</string>
+        <string>all_for_one_experiment</string>
+        <string>sync_banner_improvements_feature_test</string>
+        <string>dynamic_guidance_han_cross_platform_feature_05_20_2020_v1_0_qa</string>
+        <string>now_card_premium_recurring_exp0</string>
+        <string>fit-streaks-prod-test</string>
+        <string>fitbingo_experiment</string>
+        <string>covid19_tab_disable_override_switch_iOS_test</string>
+        <string>estimated_oxygen_variation_test</string>
+        <string>Device_Setup_Premium_And_Or_FPP_Upsell_Test</string>
+        <string>tab_bar_reordering_Android_test</string>
+        <string>social_messages_push_prompt</string>
+        <string>switch_test</string>
+        <string>iOS_account_settings_feature_test</string>
+        <string>weekly_average_abtest</string>
+        <string>ios_setup_flow_feature_test</string>
+        <string>device_genus_pairing_android</string>
+        <string>nonessential_device_setup_screen_removal_test</string>
+        <string>Automatic_Premium_Discount_Test</string>
+        <string>show_alexa_above_ga_in_setup_test</string>
+        <string>wyh_habit_insight_test</string>
+        <string>sleep_score_tips</string>
+        <string>try_premium_in_settings_iOS_test</string>
+        <string>sleep_habits_v2</string>
+        <string>get_more_sleep_v2</string>
+        <string>Year_Month_Discount_Test</string>
+        <string>resubscribe_existing_payers</string>
+        <string>wellness_report_now_card_test</string>
+        <string>new_filter_carousel_feature_test</string>
+        <string>monthly_price_upsell_feature_test</string>
+        <string>discover_content_premium_eligible_test</string>
+    </set>
+    <string name="user_properties">{&quot;gender&quot;:&quot;MALE&quot;,&quot;paired_devices&quot;:&quot;Google Pixel Watch:APP59.3.16.0 BSL59.0.0 PERIPH|BT_RADIO|101.377.54|0&quot;,&quot;afib_ppg_enrolled&quot;:false,&quot;expUserId02&quot;:&quot;02AQgRBIQmcGJCCVjJHKkoFzWE1v5sV9XCvSaH3Wa/&quot;,&quot;expUserId01&quot;:&quot;01QlgyTTlHAAAAAAAA0d4jlprl+pPlYnsI+hldsPUpX4w9JVGbhg==&quot;,&quot;is_child&quot;:false,&quot;age_range&quot;:&quot;RANGE_41_50&quot;,&quot;is_premium&quot;:false,&quot;has_health_coaching_grant&quot;:false,&quot;days_since_joined&quot;:181.0,&quot;server_locale_country&quot;:&quot;US&quot;,&quot;server_locale_language&quot;:&quot;en&quot;,&quot;os_version&quot;:&quot;14&quot;,&quot;app_version&quot;:&quot;4.09&quot;,&quot;manufacturer&quot;:&quot;Google&quot;,&quot;model&quot;:&quot;Pixel 7a&quot;,&quot;platform&quot;:&quot;Android&quot;,&quot;client_locale_country&quot;:&quot;US&quot;,&quot;client_locale_language&quot;:&quot;en&quot;,&quot;app_version_major&quot;:4,&quot;app_version_minor&quot;:9,&quot;app_version_patch&quot;:0}</string>
+    <string name="expUserId">01QlgyTTlHAAAAAAAA0d4jlprl+pPlYnsI+hldsPUpX4w9JVGbhg==</string>
+    <long name="last_scheduled_refresh" value="1722045802314" />
+    <long name="last_init_timestamp" value="1722137442855" />
+    <long name="last_refresh" value="1706321138882" />
+    <boolean name="legacy_short_circuit" value="false" />
+    <string name="expUserId02">02AQgRBIQmcGJCCVjJHKkoFzWE1v5sV9XCvSaH3Wa/</string>
+</map>

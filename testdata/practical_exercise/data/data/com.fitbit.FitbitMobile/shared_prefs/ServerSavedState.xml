@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="IDLE_TIME_KEY" value="0" />
+    <string name="SSO_URL">https://accounts.fitbit.com</string>
+    <string name="CDN_SERVER_URL">https://android-cdn-api.fitbit.com</string>
+    <string name="CDN_CLIENT_URL">https://android-cdn-client.fitbit.com</string>
+    <int name="IDLE_TYPE" value="0" />
+    <string name="SERVER_URL">https://android-api.fitbit.com</string>
+    <string name="HOVERCRAFT_CMS_URL">https://static0.fitbit.com</string>
+    <string name="SITE_URL">https://www.fitbit.com</string>
+</map>

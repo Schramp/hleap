@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <set name="android-min-sdk/28 fire-cls/18.6.0_1p fire-analytics/21.5.1 fire-rc/21.4.1_1p fire-core/20.4.3_1p fire-android/34 fire-iid/21.1.1 android-installer/com.android.vending device-model/lynx device-name/lynx fire-installations/17.0.2_1p device-brand/google android-platform/ fire-sessions/1.2.0_1p fire-fcm/24.0.0 fire-transport/18.2.1_1p android-target-sdk/34 fire-abt/21.1.2_1p">
+        <string>2024-07-21</string>
+    </set>
+    <set name="android-min-sdk/28 fire-cls/18.6.0_1p fire-analytics/21.5.1 fire-rc/21.4.1_1p fire-android/34 fire-core/20.4.3_1p fire-iid/21.1.1 android-installer/com.android.vending device-model/lynx device-name/lynx fire-installations/17.0.2_1p device-brand/google fire-sessions/1.2.0_1p android-platform/ fire-fcm/24.0.0 fire-transport/18.2.1_1p android-target-sdk/34 fire-abt/21.1.2_1p">
+        <string>2024-07-28</string>
+    </set>
+    <string name="last-used-date">2024-07-28</string>
+    <long name="fire-count" value="2" />
+    <long name="fire-global" value="1721601272155" />
+</map>

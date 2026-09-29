@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="AGE_GROUP">41-50</string>
+    <long name="LAST_FETCH_TIME_STAMP" value="1706256000000" />
+    <int name="WAKE_MAX_PERCENTAGE" value="20" />
+    <int name="REM_MIN_PERCENTAGE" value="15" />
+    <int name="LIGHT_MAX_PERCENTAGE" value="60" />
+    <int name="DEEP_MAX_PERCENTAGE" value="18" />
+    <int name="WAKE_MIN_PERCENTAGE" value="10" />
+    <int name="REM_MAX_PERCENTAGE" value="25" />
+    <int name="DEEP_MIN_PERCENTAGE" value="12" />
+    <int name="LIGHT_MIN_PERCENTAGE" value="40" />
+</map>

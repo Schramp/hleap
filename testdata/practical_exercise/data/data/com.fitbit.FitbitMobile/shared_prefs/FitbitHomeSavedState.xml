@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="post_notifications_permission_seen" value="true" />
+    <string name="USER_PREMIUM_STATUS">ELIGIBLE</string>
+    <long name="USER_PREMIUM_STATUS_SYNC_TIME" value="1720922462036" />
+</map>

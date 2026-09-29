@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="SESSION_LAUNCH_ID" value="4" />
+    <long name="SESSION_UI_ID" value="31" />
+    <string name="SESSION_VISIBILITY_STATE">FOREGROUND</string>
+    <string name="SESSION_INSTALL_ID">a18e3d98-447c-4785-b516-87d29534f7d6</string>
+</map>

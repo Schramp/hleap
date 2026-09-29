@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="first_open_time" value="1706564670633" />
+    <string name="gmp_app_id">1:316780013370:android:0ac587c694541924</string>
+    <string name="app_instance_id">40cfe843b161dc1fec2202ad0ef1b9ca</string>
+    <long name="session_id" value="0" />
+    <boolean name="app_backgrounded" value="true" />
+    <long name="health_monitor:start" value="1722097528663" />
+    <boolean name="use_service" value="true" />
+    <boolean name="deferred_analytics_collection" value="false" />
+    <string name="previous_os_version">14</string>
+    <boolean name="has_been_opened" value="true" />
+    <string name="health_monitor:value">2WC98000:Timed out waiting for get trigger URIs</string>
+    <boolean name="allow_remote_dynamite" value="true" />
+    <long name="last_pause_time" value="1713880657877" />
+    <boolean name="start_new_session" value="true" />
+    <long name="health_monitor:count" value="2" />
+</map>

@@ -1,0 +1,27 @@
+{
+  "name": "Versa 2",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/description-image.png",
+  "description-body": "Health & fitness smartwatch",
+  "description-image-url": "images/description-image.png",
+  "image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      0,
+      118,
+      128
+    ],
+    [
+      81,
+      190,
+      190
+    ]
+  ],
+  "description-title": "Fitbit Versa 2",
+  "tracker-101-url": "https://device101.fitbit.com/guides/versa-2-101.html",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "hero-image-url": "images/hero-image.png",
+  "charge-your-device-video-url": "images/charge-your-device-video.mp4"
+}

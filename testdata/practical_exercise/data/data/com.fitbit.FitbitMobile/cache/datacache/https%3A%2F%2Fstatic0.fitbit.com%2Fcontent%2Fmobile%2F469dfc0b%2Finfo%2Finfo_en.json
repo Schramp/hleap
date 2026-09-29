@@ -1,0 +1,26 @@
+{
+  "name": "Surge",
+  "bluetooth-supported": true,
+  "caption": "",
+  "choose-tracker-image-url": "images/choose-tracker-image.png",
+  "description-body": "Train smarter and go farther with GPS, heart rate, all-day fitness tracking and more.",
+  "description-image-url": "images/description-image.png",
+  "description-gradient": [
+    [
+      1,
+      39,
+      45
+    ],
+    [
+      21,
+      132,
+      134
+    ]
+  ],
+  "description-title": "Brilliant.",
+  "image-url": "images/image.png",
+  "icon-url": "images/icon.png",
+  "large-icon-url": "images/large-icon.png",
+  "tracker-101-url": "https://www.fitbit.com/surge/surge-101",
+  "hero-image-url": "images/hero-image.png"
+}

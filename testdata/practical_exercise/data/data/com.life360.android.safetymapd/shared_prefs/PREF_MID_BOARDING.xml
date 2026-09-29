@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="ADD_PLACES_KEY" value="false" />
+    <boolean name="PREF_MID_BOARDING_MEMBERS_WERE_ADDED_TO_CIRCLE_KEY" value="true" />
+    <boolean name="ADD_YOUR_PHOTO_KEY" value="false" />
+    <boolean name="ADD_PEOPLE_KEY" value="false" />
+    <boolean name="PREF_MID_BOARDING_STATE_KEY" value="true" />
+    <string name="PREF_MID_BOARDING_ORIGINAL_CIRCLE_ID_KEY">5256153e-88a0-4c1e-8e7c-fdff0301d1dd</string>
+</map>

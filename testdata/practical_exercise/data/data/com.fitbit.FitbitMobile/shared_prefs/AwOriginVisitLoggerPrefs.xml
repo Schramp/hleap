@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="sites_visited_weekly_time" value="1720922467285" />
+    <string name="origins_visited_date">7/13/24</string>
+    <set name="sites_visited_weekly_set">
+        <string>1674542384</string>
+    </set>
+    <set name="origins_visited_set">
+        <string>3871614779</string>
+        <string>1463486772</string>
+    </set>
+</map>

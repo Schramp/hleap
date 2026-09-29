@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="prev_event_name">app-open</string>
+    <long name="prev_event_timestamp" value="1722137471801" />
+    <int name="appsFlyerInAppEventCount" value="41" />
+    <long name="prev_session_dur" value="5" />
+    <long name="af_rc_max_age" value="86400" />
+    <boolean name="ddl_sent" value="true" />
+    <string name="sentSuccessfully">true</string>
+    <int name="versionCode" value="294540" />
+    <string name="af_remote_config">eyJmZWF0dXJlcyI6e30sInZlciI6ImRlZmF1bHQudjEuMTYzNzE0OTUyOSJ9</string>
+    <string name="savedProperties">{&quot;uid&quot;:&quot;1706564670839-5246464613833289570&quot;,&quot;waitForCustomerId&quot;:&quot;false&quot;,&quot;AppUserId&quot;:&quot;0c6fb46d-f9b4-47d1-84eb-d580999feb37&quot;,&quot;advertiserId&quot;:&quot;5bbb7126-2370-4208-bf7f-eced7283562c&quot;,&quot;advertiserIdEnabled&quot;:&quot;true&quot;}</string>
+    <long name="exception_number" value="1073" />
+    <string name="AF_INSTALLATION">1706564670839-5246464613833289570</string>
+    <boolean name="afUninstallToken_queued" value="false" />
+    <int name="appsFlyerCount" value="28" />
+    <long name="af_rc_timestamp" value="1722113025520" />
+    <long name="AppsFlyerTimePassedSincePrevLaunch" value="1713880652879" />
+    <boolean name="newGPReferrerSent" value="true" />
+    <string name="appsFlyerFirstInstall">2024-01-29_214430+0000</string>
+    <string name="attributionId">{&quot;install_time&quot;:&quot;2024-01-29 21:44:29.363&quot;,&quot;af_status&quot;:&quot;Organic&quot;,&quot;af_message&quot;:&quot;organic install&quot;,&quot;is_first_launch&quot;:false}</string>
+</map>

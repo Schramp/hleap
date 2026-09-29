@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="currentUser">{&quot;avatar&quot;:&quot;https://www.life360.com/img/user_images/0c6fb46d-f9b4-47d1-84eb-d580999feb37/cd97bbd4-e820-45e8-9823-7ce273d0da43.jpg?fd\u003d2&quot;,&quot;created&quot;:&quot;2024-01-29 21:46:48&quot;,&quot;dateOfBirth&quot;:&quot;1982-05-05&quot;,&quot;firstName&quot;:&quot;Liz&quot;,&quot;hasMultipleActiveDevices&quot;:false,&quot;id&quot;:&quot;0c6fb46d-f9b4-47d1-84eb-d580999feb37&quot;,&quot;lastName&quot;:&quot;Dehner&quot;,&quot;lastUpdated&quot;:1722122503355,&quot;loginEmail&quot;:&quot;ldehner505@gmail.com&quot;,&quot;loginPhone&quot;:&quot;+19199282177&quot;,&quot;phoneStatus&quot;:&quot;verified&quot;,&quot;settings&quot;:{&quot;dateFormat&quot;:&quot;MDY24&quot;,&quot;driveSdkStatus&quot;:&quot;UNSET&quot;,&quot;locale&quot;:&quot;en_US&quot;,&quot;timeZone&quot;:&quot;America/New_York&quot;,&quot;unitOfMeasure&quot;:&quot;IMPERIAL&quot;}}</string>
+    <string name="activeCircleId">5256153e-88a0-4c1e-8e7c-fdff0301d1dd</string>
+    <long name="LAST_TIME_WHEN_ISSUE_WAS_EMPTY" value="1706564901386" />
+</map>

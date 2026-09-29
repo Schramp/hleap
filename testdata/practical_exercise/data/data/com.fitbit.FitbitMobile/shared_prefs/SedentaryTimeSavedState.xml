@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="settings">{&quot;inactivityAlerts&quot;:{&quot;weekDays&quot;:[&quot;MONDAY&quot;,&quot;TUESDAY&quot;,&quot;WEDNESDAY&quot;,&quot;THURSDAY&quot;,&quot;FRIDAY&quot;,&quot;SATURDAY&quot;,&quot;SUNDAY&quot;]},&quot;sedentaryTime&quot;:{&quot;duration&quot;:9,&quot;startTime&quot;:&quot;09:00&quot;}}</string>
+</map>
