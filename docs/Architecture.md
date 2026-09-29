@@ -30,7 +30,7 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   No mapping to native Hansken trace types yet.
 
 ## Phases
-Tracked as GitHub issues.
+Tracked as GitHub issues, worked on as described in [Workflow.md](Workflow.md).
 0. Done (#1): single artifact `googleMapsGmm` (Google Maps Directions) on
    `data/data/com.google.android.apps.maps/databases/gmm_storage.db` from
    `testdata/practical_exercise` (ALEAPP finds 4 directions).
