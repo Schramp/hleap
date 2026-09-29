@@ -35,7 +35,11 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   needs protobuf 7.x. An `.alprofile` limits ALEAPP to the selected module(s).
 - **Output**: per input trace, child traces:
   - `ALEAPP report` — zipped ALEAPP output folder (HTML/TSV/LAVA)
-  - one child per produced TSV (`<artifact name>`), with the TSV as raw data
+  - from the LAVA report (`_lava_data.lava` + `_lava_artifacts.db`, #11): a
+    child per artifact category (`GEO Location`) and below it a child per
+    non-empty artifact (`Google Maps Directions`), raw data = TSV of its
+    LAVA table with the original ALEAPP headers. Same rows as ALEAPP's
+    `_TSV Exports`, which are no longer used.
 
   No mapping to native Hansken trace types yet.
 
@@ -121,6 +125,7 @@ Done:
   `testdata/practical_exercise` (ALEAPP finds 4 directions).
 - #2 filesystem emulation with a hard-coded matcher: deferred plugin that also
   fetches the sidecars (`gmm_storage.db-journal`) via the searcher.
+- #11 LAVA child traces in `process()`, replacing the `_TSV Exports` children.
 
 **P1 — critical path**, in this order (#10 runs alongside when a Hansken is
 available, and must be done before production use):
@@ -136,7 +141,6 @@ available, and must be done before production use):
 
 **P2 — before production use**:
 - #3 Map Hansken `file.path` to ALEAPP root paths.
-- #11 Use LAVA child traces in `process()`.
 - #7 Docker image and integration test.
 - #12 Temp disk and memory use.
 
@@ -176,5 +180,5 @@ constraint; replaced by #13.
 - Full-HQL queries are not yet verified on a real Hansken, #10.
 - ALEAPP report zip contains run timestamps (logs, `index.html`, LAVA dbs,
   zip mtimes), so tests run with `HLEAPP_REPORT=0` (set in `tox.ini`) and only
-  check the TSV child traces.
+  check the LAVA child traces.
 - ALEAPP runtime deps (`sqlcipher3`, git dep `mister_skinnylegs`) in the slim image.

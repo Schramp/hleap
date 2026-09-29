@@ -288,10 +288,9 @@ class Plugin(DeferredExtractionPlugin):
                                     {'search_and_stage': stager.search_and_stage})
             log.info(f'ALEAPP {modules} staged {stager.staged_paths}')
 
-            tsv_dir = os.path.join(report_dir, '_TSV Exports')
-            for tsv in sorted(os.listdir(tsv_dir)) if os.path.isdir(tsv_dir) else []:
-                with open(os.path.join(tsv_dir, tsv), 'rb') as tsv_file:
-                    trace.child_builder(os.path.splitext(tsv)[0]).add_data('raw', tsv_file.read()).build()
+            # the LAVA report holds the same rows as _TSV Exports, plus category and table metadata
+            count = add_lava_children(trace, report_dir)
+            log.info(f'ALEAPP {modules} produced {count} non-empty artifacts')
             if HLEAPP_REPORT:
                 trace.child_builder(REPORT_CHILD).add_data('raw', zip_folder(report_dir)).build()
 

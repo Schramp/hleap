@@ -66,8 +66,13 @@ def report_zip(processed_trace):
     return zipfile.ZipFile(io.BytesIO(processed_trace.child('ALEAPP report').data['raw']))
 
 
-def test_process_adds_artifact_and_report_children(processed_trace):
-    assert sorted(processed_trace.tree()) == ['ALEAPP report', 'Google Maps Directions']
+def test_process_adds_lava_and_report_children(processed_trace):
+    tree = processed_trace.tree()
+    assert sorted(tree) == ['ALEAPP report', 'GEO Location']
+    # the artifact child comes from the LAVA report: category above it, original ALEAPP headers in the TSV
+    directions = tree['GEO Location']['Google Maps Directions']
+    assert directions.startswith(b'Directions URL\tLatitude\tLongitude\t')
+    assert directions.count(b'\n') == 5  # header + the 4 directions
 
 
 def test_report_blob_is_a_valid_zip_with_the_aleapp_output(report_zip):

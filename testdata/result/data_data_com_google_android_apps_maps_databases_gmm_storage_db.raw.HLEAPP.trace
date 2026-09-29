@@ -14,9 +14,18 @@
     {
       "trace" : {
         "id" : "0-0",
-        "name" : "Google Maps Directions",
-        "path" : "/test-input-trace/Google Maps Directions"
-      }
+        "name" : "GEO Location",
+        "path" : "/test-input-trace/GEO Location"
+      },
+      "children" : [
+        {
+          "trace" : {
+            "id" : "0-0-0",
+            "name" : "Google Maps Directions",
+            "path" : "/test-input-trace/GEO Location/Google Maps Directions"
+          }
+        }
+      ]
     }
   ]
 }
