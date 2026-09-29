@@ -1,0 +1,81 @@
+{
+    "lava_schema_version": 2,
+    "parser_info": {
+        "leapp_name": "ALEAPP",
+        "leapp_version": "2026.4.1-dev",
+        "leapp_mode": "GUI",
+        "package": "Source code",
+        "OS": "macOS-26.7-arm64-arm-64bit-Mach-O",
+        "start_timestamp": 1790674529,
+        "end_timestamp": 1790674531
+    },
+    "param_input": "/Users/a264401/Desktop/ALEAPP/LEAPP Practicals Exercises/Android Locations Practical/AndroidLocations.zip",
+    "param_output": "/Users/a264401/Desktop/ALEAPP_Output_2026-09-29_Tuesday_113447",
+    "param_type": "zip",
+    "param_profile": null,
+    "profile_used": false,
+    "processing_status": "Complete",
+    "lava_db_name": "_lava_artifacts.db",
+    "modules": [
+        {
+            "module_name": "googleLastTrip",
+            "module_status": "Complete",
+            "artifact_name": "get_googleLastTrip",
+            "file_count": 1
+        },
+        {
+            "module_name": "usagestatsVersion",
+            "module_status": "No files found",
+            "artifact_name": "usagestatsVersion",
+            "file_count": 0
+        }
+    ],
+    "artifacts": {
+        "GEO Location": [
+            {
+                "artifact_key": "get_googleLastTrip",
+                "name": "Google Maps Last Trip",
+                "tablename": "get_googlelasttrip",
+                "module": "googleLastTrip",
+                "column_map": {
+                    "timestamp": "Timestamp",
+                    "directionality": "Directionality",
+                    "place": "Place",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                    "data": "Data"
+                },
+                "artifact_icon": "map-pin",
+                "record_count": 2,
+                "source_path": "data/data/com.google.android.apps.maps/files/saved_directions.data.cs",
+                "object_columns": [
+                    {
+                        "name": "timestamp",
+                        "type": "datetime"
+                    }
+                ]
+            }
+        ]
+    },
+    "meta": {
+        "modules": [
+            {
+                "module_name": "googleLastTrip",
+                "module_filename": "googleLastTrip.py",
+                "artifacts": [
+                    {
+                        "artifact_key": "get_googlelasttrip",
+                        "tablename": "get_googlelasttrip",
+                        "name": "Google Maps Last Trip",
+                        "description": "Last saved trip start/end from Google Maps (saved_directions.data.cs)",
+                        "author": "@abrignoni",
+                        "created_date": "2023-10-16",
+                        "last_updated_date": "2023-10-16",
+                        "notes": "",
+                        "category": "GEO Location"
+                    }
+                ]
+            }
+        ]
+    }
+}
