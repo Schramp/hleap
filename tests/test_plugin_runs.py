@@ -1,4 +1,7 @@
 """Issue #4: one ALEAPP run per anchor trace, with every module the trace starts."""
+import json
+import sqlite3
+
 import pytest
 from hansken_extraction_plugin.api.data_context import DataContext
 
@@ -9,13 +12,15 @@ from fake_trace import FakeTrace
 
 @pytest.fixture
 def runs(monkeypatch, tmp_path):
-    """Replace the ALEAPP run: record the modules and the search scope per glob, return an empty report."""
+    """Replace the ALEAPP run: record the modules and the search scope per glob, return an empty LAVA report."""
     calls = []
 
     def fake_run(input_dir, out_dir, work_dir, modules, handlers=None):
         calls.append(list(modules))
         report = tmp_path / f'report{len(calls)}'
         report.mkdir()
+        (report / plugin.LAVA_JSON).write_text(json.dumps({'artifacts': {}}), encoding='utf8')
+        sqlite3.connect(report / plugin.LAVA_DB).close()
         return str(report)
 
     monkeypatch.setattr(plugin, 'run_aleapp', fake_run)
