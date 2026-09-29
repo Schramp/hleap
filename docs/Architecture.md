@@ -47,6 +47,25 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   `get_chromeCreditCards` (need `app_webview/Default/Web Data`, an anchor of
   the Mister Skinnylegs modules); also anchors without literal text
   (`*.jpg`, `*/*.cnt`, …).
+  Implemented in `anchors.py`; `python tools/anchor_check.py
+  testdata/practical_exercise.zip [--matcher]` prints the plan. Current
+  ALEAPP: 1269 modules, 1255 kept, 14 dropped:
+  - generic anchor: `get_walStrings` (`*/*-wal`), `get_c2paProvenance`
+    (`*.jpg` …), `exoplayerCachedMedia`, `realmUndecodedStores`,
+    `get_offlinePages`, `get_TorrentData`, `get_torrentinfo`,
+    `get_torrentResumeinfo`, `clipboard`;
+  - conflict on the test tree: `get_chromeAutofill`,
+    `get_chromeAutofillProfiles`, `get_chromeCreditCards`,
+    `get_chromePaymentsCustomerData` (`app_webview/Default/Web Data`),
+    `get_Life360_chat_messages` (`cache/picasso-cache/journal`, anchor of the
+    Life360 API cache modules).
+
+  Conflicts depend on the files present, so the drop list grows with the
+  trees it is checked against. The generated HQL-Lite matcher (~118 KB) parses
+  in the SDK test framework and matches only `gmm_storage.db` of the test
+  inputs; quoting, `type:folder` and matcher size on a real Hansken are #10.
+  A module can have several anchors on one device (e.g. the 9 `cache/*/journal`
+  files of the Life360 API cache modules); runs then overlap, see #4.
 - **On-demand file access** (#14, #15): instead of emulating the filesystem up
   front, a launcher in the ALEAPP venv replaces ALEAPP's `FileSeekerDir` by a
   `HanskenSeeker`. Each `seeker.search(glob)` becomes an RPC to the plugin
