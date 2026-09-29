@@ -35,6 +35,12 @@ CONFLICT_DROPS = {
 WILDCARDS = re.compile(r'[*?\[]')
 
 
+def aleapp_path(file_path):
+    """The path ALEAPP matches its globs against ('root/' + path relative to the extraction root) for a Hansken
+    file.path. Hansken writes file.path without a leading slash ('data/data/...'); both forms are accepted."""
+    return 'root/' + file_path.lstrip('/')
+
+
 def load_modules(aleapp_dir):
     """Read {module key: path globs} from all ALEAPP artifacts, without importing them (ALEAPP deps live in its
     own venv). Modules without paths are left out."""

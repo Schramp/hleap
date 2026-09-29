@@ -181,7 +181,10 @@ constraint; replaced by #13.
   `python tools/tree_to_testdata.py testdata/practical_exercise.zip testdata/input '*/com.google.android.apps.maps/databases/gmm_storage.db' --siblings 'gmm_storage.db*'`
 
 ## Open issues
-- ALEAPP globs vs Hansken `file.path` format (leading `/`, image prefix), #3.
+- Hansken's `file.path` has no leading `/` (`data/data/com.x/...`; the trace
+  `path` does start with `/<image uuid>/`). `anchors.aleapp_path()` turns
+  either form into ALEAPP's `root/...`; the test data uses Hansken's form
+  (#26). Image or partition prefixes in `file.path`: #3.
 - Full-HQL queries are not yet verified on a real Hansken, #10.
 - ALEAPP report zip contains run timestamps (logs, `index.html`, LAVA dbs,
   zip mtimes), so tests run with `HLEAPP_REPORT=0` (set in `tox.ini`) and only

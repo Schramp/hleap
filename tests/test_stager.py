@@ -160,3 +160,17 @@ def test_folder_anchor_is_staged_as_a_folder(out_dir):
     staged = stage(stager, out_dir, glob='**/com.openai.chatgpt/cache/files')
     assert [item['source_path'] for item in staged] == [folder.lstrip('/')]
     assert (out_dir / 'report' / 'data' / folder.lstrip('/')).is_dir()
+
+
+@pytest.mark.parametrize('prefix', ['', '/'])
+def test_hansken_file_paths_without_leading_slash_are_staged_in_scope(out_dir, prefix):
+    """Issue #26: Hansken writes file.path as 'data/data/...'; the scope folder comes from process() as 'root/...'."""
+    databases = prefix + DATABASES.lstrip('/')
+    anchor = FakeTrace(f'{databases}/gmm_storage.db', b'db')
+    searcher = FakeSearcher([FakeTrace(f'{databases}/gmm_storage.db-journal')])
+    stager = Stager(anchor, searcher, out_dir, hql_lite=True,
+                    scope=lambda glob: 'root/data/data/com.google.android.apps.maps/databases')
+    staged = stage(stager, out_dir)
+    assert [item['source_path'] for item in staged] == [
+        'data/data/com.google.android.apps.maps/databases/gmm_storage.db',
+        'data/data/com.google.android.apps.maps/databases/gmm_storage.db-journal']

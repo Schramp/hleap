@@ -18,7 +18,7 @@ from hansken_extraction_plugin.api.plugin_info import Author, MaturityLevel, Plu
 from hansken_extraction_plugin.runtime.extraction_plugin_runner import run_with_hanskenpy
 from logbook import Logger
 
-from anchors import CONFLICT_DROPS, AnchorPlan, load_modules, load_profile
+from anchors import CONFLICT_DROPS, AnchorPlan, aleapp_path, load_modules, load_profile
 from hleapp_rpc import RpcServer
 
 log = Logger(__name__)
@@ -79,7 +79,7 @@ def materialize(trace, fs_dir):
 
 def glob_query(glob, hql_lite):
     """A Hansken query that finds at least every trace an ALEAPP glob matches, or None when the glob has no literal
-    text to select on. Callers filter the results exactly with fnmatch('root' + file.path, glob).
+    text to select on. Callers filter the results exactly with fnmatch(aleapp_path(file.path), glob).
 
     Hansken evaluates searcher queries as HQL, the SDK standalone test framework as HQL-Lite (the matcher language);
     tests set HLEAPP_TEST_SEARCH=1 (tox.ini). Search results carry no trace types, so deleted files can only be left
@@ -142,10 +142,10 @@ class Stager:
         results, seen = [], set()
         for trace in candidates:
             path = trace.get('file.path')
-            if not path or path in seen or not fnmatch.fnmatch('root' + path, glob):
+            if not path or path in seen or not fnmatch.fnmatch(aleapp_path(path), glob):
                 log.debug(f'ALEAPP glob {glob}: {path!r} does not match or was seen already')
                 continue
-            if folder and not ('root' + path).startswith(folder + '/'):
+            if folder and not aleapp_path(path).startswith(folder + '/'):
                 log.debug(f'ALEAPP glob {glob}: {path} is outside the search scope {folder}')
                 continue  # belongs to another anchor's run of the same module
             if trace is not self._anchor and trace.get('data.raw.size') is None:
@@ -389,7 +389,7 @@ class Plugin(DeferredExtractionPlugin):
         rel_path = (trace.get('file.path') or '').lstrip('/')
         # the matcher may select more than the anchors (e.g. character classes widen to '?'): check exactly,
         # ALEAPP style ('root/' + path); a folder trace can only start directory anchors
-        anchor_path = 'root/' + rel_path
+        anchor_path = aleapp_path(rel_path)
         is_dir = False
         modules = PLAN.triggered_by(anchor_path)
         if not modules:
