@@ -6,7 +6,7 @@ import io
 import json
 import os
 import pathlib
-import posixpath
+import re
 import sqlite3
 import subprocess
 import tempfile
@@ -24,6 +24,7 @@ log = Logger(__name__)
 # ALEAPP runs in its own interpreter: it pins protobuf 5.x, the plugin SDK needs protobuf 7.x
 ALEAPP_DIR = os.environ.get('ALEAPP_DIR', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ALEAPP'))
 ALEAPP_PYTHON = os.environ.get('ALEAPP_PYTHON', '/opt/aleapp-venv/bin/python')
+LAUNCHER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hleapp_launcher.py')
 ALEAPP_TIMEOUT = int(os.environ.get('ALEAPP_TIMEOUT', '600'))
 # the zipped report holds run timestamps, tests turn it off to get reproducible results
 HLEAPP_REPORT = os.environ.get('HLEAPP_REPORT', '1') != '0'
@@ -86,56 +87,90 @@ def materialize(trace, fs_dir):
     return rel_path
 
 
-class TraceFinder:
-    """Finds the traces of files in one directory whose name matches an ALEAPP glob.
+def glob_query(glob, hql_lite):
+    """A Hansken query that finds at least every trace an ALEAPP glob matches, or None when the glob has no literal
+    text to select on. Callers filter the results exactly with fnmatch('root' + file.path, glob).
 
-    Hansken evaluates searcher queries as HQL, the SDK standalone test framework as HQL-Lite (the matcher
-    language). This wrapper only sends a coarse name query in the dialect at hand and does the exact filtering
-    (same directory, ALEAPP glob) here, so both give the same result. Tests set HLEAPP_TEST_SEARCH=1 (tox.ini).
+    Hansken evaluates searcher queries as HQL, the SDK standalone test framework as HQL-Lite (the matcher language);
+    tests set HLEAPP_TEST_SEARCH=1 (tox.ini). Search results carry no trace types, so deleted files can only be left
+    out in the query.
+    """
+    pattern = re.sub(r'\[[^\]]*\]', '?', glob)  # character classes widen to '?'
+    pattern = re.sub(r'\*{2,}', '*', pattern)
+    leaf = pattern.rstrip('/').rsplit('/', 1)[-1]
+    if re.sub(r'[*?]', '', leaf):
+        field, value = 'file.name', leaf
+    elif re.sub(r'[*?/]', '', pattern):
+        # the name is only wildcards ('.../cache/files/*'): select on the path, Hansken paths start with '/'
+        field, value = 'file.path', pattern
+    else:
+        return None
+    if hql_lite:
+        return f"{field}='{value}' AND NOT type:deleted"
+    # TODO #10 verify on a real Hansken: wildcards, NOT, quoting of names with spaces or HQL characters
+    value = f'"{value}"' if ' ' in value else value
+    return f'{field}:{value} AND NOT type:deleted'
+
+
+class Stager:
+    """Serves ALEAPP's seeker over RPC: finds the traces matching an ALEAPP glob and writes them into ALEAPP's
+    data folder, one copy per file (see hleapp_launcher.HanskenSeeker).
+
+    The anchor trace (the one process() got) is matched here directly: under the deferred constraint a search never
+    returns it.
     """
 
-    def __init__(self, searcher, hql_lite=os.environ.get('HLEAPP_TEST_SEARCH', '0') == '1'):
+    def __init__(self, anchor, searcher, out_dir, hql_lite=os.environ.get('HLEAPP_TEST_SEARCH', '0') == '1'):
+        self._anchor = anchor
         self._searcher = searcher
+        self._out_dir = os.path.realpath(out_dir)
         self._hql_lite = hql_lite
+        self._staged = {}
 
-    def query(self, name_glob):
-        # search results do not carry trace types, so deleted files can only be left out in the query
-        if self._hql_lite:
-            return f'file.name={name_glob} AND NOT type:deleted'
-        # TODO verify on a real Hansken: wildcard, NOT, escaping of names with spaces or HQL characters
-        return f'file.name:{name_glob} AND NOT type:deleted'
+    @property
+    def staged_paths(self):
+        return sorted(item['source_path'] for item in self._staged.values())
 
-    def find(self, directory, glob):
-        for found in self._searcher.search(self.query(posixpath.basename(glob)), count=SEARCH_LIMIT):
-            path = found.get('file.path')
-            # the name query covers the whole image, keep only what ALEAPP would match in this directory
-            if not path or posixpath.dirname(path) != directory or not fnmatch.fnmatch('root' + path, glob):
+    def search_and_stage(self, glob, data_folder, first_hit=False):
+        data_folder = os.path.realpath(data_folder)
+        # the request comes from another process: only ever write inside ALEAPP's own output folder
+        if os.path.commonpath([self._out_dir, data_folder]) != self._out_dir:
+            raise ValueError(f'data folder {data_folder} is outside the ALEAPP output folder')
+        candidates = [self._anchor]
+        query = glob_query(glob, self._hql_lite)
+        if query:
+            candidates += self._searcher.search(query, count=SEARCH_LIMIT)
+        else:
+            log.info(f'ALEAPP glob {glob} has no literal text to search on, skipped')
+        results, seen = [], set()
+        for trace in candidates:
+            path = trace.get('file.path')
+            if not path or path in seen or not fnmatch.fnmatch('root' + path, glob):
                 continue
-            if found.get('data.raw.size') is None:
-                log.info(f'{path} has no raw data, not written to the emulated filesystem')
+            if trace is not self._anchor and trace.get('data.raw.size') is None:
+                log.info(f'{path} has no raw data, not staged')
                 continue
-            yield path, found
+            seen.add(path)
+            key = (data_folder, path)
+            if key not in self._staged:
+                rel_path = materialize(trace, data_folder)
+                modified = timestamp(trace.get('file.modifiedOn')) or 0
+                self._staged[key] = {'staged': os.path.join(data_folder, rel_path), 'source_path': rel_path,
+                                     'ctime': timestamp(trace.get('file.createdOn')) or modified, 'mtime': modified}
+            results.append(self._staged[key])
+            if first_hit:
+                break
+        return results
 
 
-def emulate_fs(trace, finder, fs_dir):
-    """Rebuild the part of the filesystem ALEAPP needs: the matched trace plus the files next to it
-    that match the artifact globs (sqlite sidecars like -journal/-wal/-shm). Returns the written paths."""
-    anchor_path = trace.get('file.path')
-    written = {anchor_path: materialize(trace, fs_dir)}
-    for glob in ARTIFACT_PATHS:
-        for path, found in finder.find(posixpath.dirname(anchor_path), glob):
-            if path not in written:
-                written[path] = materialize(found, fs_dir)
-    return sorted(written.values())
-
-
-def run_aleapp(fs_dir, out_dir, work_dir, handlers=None):
-    """Run ALEAPP in its own venv and serve its RPC requests (handlers, see hleapp_rpc) on this thread."""
+def run_aleapp(input_dir, out_dir, work_dir, handlers=None):
+    """Run ALEAPP in its own venv through hleapp_launcher.py and serve its RPC requests (handlers, see hleapp_rpc)
+    on this thread."""
     os.makedirs(out_dir, exist_ok=True)
     profile = os.path.join(work_dir, 'hleapp.alprofile')
     with open(profile, 'w') as profile_file:
         json.dump({'leapp': 'aleapp', 'format_version': 1, 'plugins': [ARTIFACT_KEY]}, profile_file)
-    command = [ALEAPP_PYTHON, os.path.join(ALEAPP_DIR, 'aleapp.py'), '-t', 'fs', '-i', fs_dir, '-o', out_dir,
+    command = [ALEAPP_PYTHON, LAUNCHER, '-t', 'fs', '-i', input_dir, '-o', out_dir,
                '-m', profile, '--custom_output_folder', REPORT_FOLDER]
     # ALEAPP output goes to a file: a pipe nobody reads while requests are served could fill up and block ALEAPP
     aleapp_log = os.path.join(work_dir, 'aleapp.log')
@@ -213,7 +248,7 @@ class Plugin(DeferredExtractionPlugin):
         plugin_info = PluginInfo(
             id=PluginId(domain='github.com/Schramp', category='extract', name='HLEAPP'),
             version='0.0.1',
-            description=f'Runs ALEAPP artifact {ARTIFACT_MODULE} on a filesystem emulated from Hansken traces',
+            description=f'Runs ALEAPP artifact {ARTIFACT_MODULE}, fetching its files from Hansken on demand',
             author=Author('Ruud Schramp', 'netwerkforens@gmail.com', 'NFI'),
             maturity=MaturityLevel.PROOF_OF_CONCEPT,
             webpage_url='https://github.com/Schramp/hleap',
@@ -235,10 +270,14 @@ class Plugin(DeferredExtractionPlugin):
             log.info(f'{rel_path} does not match {ARTIFACT_PATHS}, skipping')
             return
         with tempfile.TemporaryDirectory(prefix='hleapp-') as work_dir:
-            fs_dir = os.path.join(work_dir, 'fs')
-            files = emulate_fs(trace, TraceFinder(searcher), fs_dir)
-            log.info(f'running ALEAPP {ARTIFACT_KEY} on {files}')
-            report_dir = run_aleapp(fs_dir, os.path.join(work_dir, 'out'), work_dir)
+            # ALEAPP wants an existing input folder; its files come on demand through the Stager instead
+            input_dir = os.path.join(work_dir, 'input')
+            os.makedirs(input_dir)
+            out_dir = os.path.join(work_dir, 'out')
+            stager = Stager(trace, searcher, out_dir)
+            log.info(f'running ALEAPP {ARTIFACT_KEY} for {rel_path}')
+            report_dir = run_aleapp(input_dir, out_dir, work_dir, {'search_and_stage': stager.search_and_stage})
+            log.info(f'ALEAPP {ARTIFACT_KEY} staged {stager.staged_paths}')
 
             tsv_dir = os.path.join(report_dir, '_TSV Exports')
             for tsv in sorted(os.listdir(tsv_dir)) if os.path.isdir(tsv_dir) else []:

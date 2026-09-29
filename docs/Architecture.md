@@ -8,18 +8,17 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   matched Hansken traces into a temp dir at their `file.path` and runs ALEAPP
   with `-t fs` on it. ALEAPP code stays untouched (ALEAPP only reads files via
   its seekers, `ALEAPP/scripts/search_files.py`).
-- **Filesystem emulation** (step 1, issue #2): the plugin is a deferred
-  plugin. Besides the matched trace it searches the files next to it that
-  match the artifact globs (sqlite sidecars `-journal`/`-wal`/`-shm`) and
-  writes them into the tree too, with `file.modifiedOn`/`file.accessedOn` as
-  file times (ALEAPP reports `st_mtime`). Deleted traces are left out in the
-  query (`NOT type:deleted`; search results carry no trace types), traces
+- **File access** (#15, replaced the up-front emulation of #2): the plugin is
+  a deferred plugin; ALEAPP gets its files on demand, see *On-demand file
+  access* below. Files are written with `file.modifiedOn`/`file.accessedOn`
+  as file times (ALEAPP reports `st_mtime`). Deleted traces are left out in
+  the query (`NOT type:deleted`; search results carry no trace types), traces
   without raw data are skipped, empty files are still written (whether a
   `-journal` exists is filesystem state).
-- **Search wrapper**: Hansken evaluates searcher queries as HQL, the SDK
-  standalone test framework as HQL-Lite. `TraceFinder` in `plugin.py` sends a
-  coarse name query in the right dialect (`HLEAPP_TEST_SEARCH=1` in `tox.ini`
-  selects HQL-Lite) and filters directory and glob in Python.
+- **Search dialects**: Hansken evaluates searcher queries as HQL, the SDK
+  standalone test framework as HQL-Lite. `glob_query()` in `plugin.py` builds
+  a coarse query in the right dialect (`HLEAPP_TEST_SEARCH=1` in `tox.ini`
+  selects HQL-Lite) and the `Stager` filters exactly with the ALEAPP glob.
 - **Matcher**: hard-coded for step 1
   (`file.name='gmm_storage.db' AND $data.type=raw`); later generated from the
   module anchors (#13, see Target design).
@@ -66,13 +65,23 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   inputs; quoting, `type:folder` and matcher size on a real Hansken are #10.
   A module can have several anchors on one device (e.g. the 9 `cache/*/journal`
   files of the Life360 API cache modules); runs then overlap, see #4.
-- **On-demand file access** (#14, #15): instead of emulating the filesystem up
-  front, a launcher in the ALEAPP venv replaces ALEAPP's `FileSeekerDir` by a
-  `HanskenSeeker`. Each `seeker.search(glob)` becomes an RPC to the plugin,
-  which turns the glob into a Hansken query, filters exactly with ALEAPP's
-  glob, and writes the hits straight into ALEAPP's data folder (one copy,
-  #12). No full listing up front. The anchor is staged from `trace`; a folder
-  hit fetches its subtree. ALEAPP itself stays untouched.
+- **On-demand file access** (#15): the plugin starts `hleapp_launcher.py` in
+  the ALEAPP venv (with an empty `-i` folder). It replaces ALEAPP's
+  `FileSeekerDir` by `HanskenSeeker` for that run only (`aleapp.py` does
+  `from scripts.search_files import *`) and calls `aleapp.main()`; the ALEAPP
+  checkout is not changed. Each `seeker.search(glob)` becomes the RPC
+  `search_and_stage`, served by `Stager` in `plugin.py`:
+  - `glob_query()`: `file.name` wildcard when the glob's name part has
+    literal text, else a `file.path` wildcard; character classes become `?`;
+    globs without any literal text are not searched;
+  - the anchor `trace` is matched directly (a search never returns it);
+  - results are filtered exactly with `fnmatch('root' + file.path, glob)` and
+    written straight into ALEAPP's data folder (one copy per file, #12);
+    requests for a folder outside ALEAPP's output folder are refused;
+  - a glob that matches a folder stages nothing inside it, as
+    `FileSeekerDir` does.
+  No full listing up front. `tests/test_launcher.py` pins the ALEAPP
+  internals the launcher relies on.
 - **RPC channel** (#14, `hleapp_rpc.py`, standard library only, imported in
   both venvs): one end of a `socketpair` is passed to the ALEAPP child
   (`pass_fds`, fd number in `HLEAPP_RPC_FD`), so there is no socket file and
@@ -96,10 +105,10 @@ Done:
 
 **P1 — critical path**, in this order (#10 runs alongside when a Hansken is
 available, and must be done before production use):
-1. #13 Anchor rules and conflict checker.
-2. #14 RPC channel between plugin and ALEAPP venv.
-3. #15 HanskenSeeker: on-demand file access (acceptance: the same 4 rows from
-   `gmm_storage.db`).
+1. Done (#13): anchor rules and conflict checker.
+2. Done (#14): RPC channel between plugin and ALEAPP venv.
+3. Done (#15): HanskenSeeker, on-demand file access (the same 4 rows from
+   `gmm_storage.db`; ALEAPP now asks for the `-journal` itself).
 4. #10 Verify the HQL query forms on a real Hansken (`file.name`/`file.path`
    wildcards, `NOT type:deleted`, names with spaces, time per search, folder
    traces as anchors).
@@ -125,8 +134,9 @@ constraint; replaced by #13.
   (tox passes `ALEAPP_*` through).
 - SDK 0.10.0 `test_plugin` cannot parse 4-part Java versions
   (`21.0.12.1`); run `tox -- --skip-java-version-check`.
-- `tox -e unit` runs the unit tests in `tests/` (pytest, e.g. the FS
-  emulation against a fake searcher); `tox -e py3` the SDK test framework.
+- `tox -e unit` runs the unit tests in `tests/` (pytest, e.g. the `Stager`
+  against a fake searcher, the launcher in the ALEAPP venv); `tox -e py3` the
+  SDK test framework.
 - Test data for a deferred plugin: files the plugin should find go in
   `testdata/input/<input name>/searchtraces/`. Their `.trace` needs `id` and
   `data.raw.size`, otherwise the test framework search fails with only
