@@ -11,9 +11,9 @@ class Plugin(ExtractionPlugin):
 
     def plugin_info(self):
         plugin_info = PluginInfo(
-            id=PluginId(domain='domain', category='category', name='your_plugin_name'),
-            version='0.0.0',
-            description='description of your plugin',
+            id=PluginId(domain='domain', category='category', name='HLEAPP'),
+            version='0.0.1',
+            description='ALEAPP wrapper',
             author=Author('Your name', 'your@email.address', 'your organisation'),
             maturity=MaturityLevel.PROOF_OF_CONCEPT,
             webpage_url='',  # e.g. url to the code repository of your plugin
