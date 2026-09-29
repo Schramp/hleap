@@ -159,6 +159,42 @@ Next: map the chosen time column (and the others) onto Hansken's `event`
 data type, property names from the Hansken trace model; start with the
 example modules (#8).
 
+## Geolocations from LAVA
+Checked the same way: LAVA has enough to create geolocations for the modules
+that report coordinates, but only by convention, not by type.
+
+What LAVA gives:
+- **Coordinates as text columns.** There is no location type: `Latitude` /
+  `Longitude` are `TEXT` columns, and ALEAPP's `data_views` only knows
+  `conversation` (42 artifacts), no map view. 69 module files use exactly the
+  headers `Latitude` + `Longitude`, the names ALEAPP's own KML export looks
+  for; some add prefixed pairs such as `To`, `Start`, `End Latitude` /
+  `Longitude` (a route: several locations per row).
+- **Decimal degrees.** Modules that read E7 integers convert them themselves
+  (`/ 1e7`: AirTag, semantic locations, Google ODLH). In the example output
+  115 of 120 coordinate pairs are valid degrees (AirTag scans 39/39, Life360
+  device locations 67/67, Google Maps searches 5 + 1 empty, Google Maps
+  directions 4 start points).
+- **Time.** The same row's timestamp, chosen by the rule in *Event timestamps
+  from LAVA* (ALEAPP's KML export uses `Timestamp`, else the first
+  `datetime` column).
+
+What the plugin must decide:
+- **Recognising the columns**: pair `<prefix>Latitude` with
+  `<prefix>Longitude` by header name (from `column_map`); other spellings
+  (lowercase, `lat`/`lon`, a single `GPS` or `Coordinates` column) are not
+  picked up, as in ALEAPP's KML export.
+- **Validation**: parse as float, keep only -90..90 / -180..180, drop empty
+  values and `0,0`. Needed in practice: the Google Maps Directions `To
+  Longitude` holds `-77.0357z\x00\x00\x01v171` (a parser bug in that module).
+- **Extra attributes**: accuracy, altitude, speed, bearing appear with
+  module-specific names and units (Life360: `Accuracy (as stored)`), so they
+  are not mapped automatically; the coordinate system is assumed WGS84
+  (Android location APIs), which LAVA does not state.
+
+Next: map valid pairs onto Hansken's geolocation data type (property names
+from the Hansken trace model), together with the event time (#8).
+
 ## Roadmap
 Tracked as GitHub issues with priority labels, worked on as described in
 [Workflow.md](Workflow.md).
