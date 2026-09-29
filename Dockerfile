@@ -17,6 +17,13 @@ ENV PATH="/venv/bin:$PATH"
 COPY requirements.txt /requirements.txt
 RUN pip install -Ur /requirements.txt
 
+# ALEAPP runs in this same image, but in its own venv: it pins protobuf 5.x, the plugin SDK needs protobuf 7.x
+# (git, present in this 'fat' image, is needed for ALEAPP's mister_skinnylegs dependency; lz4==4.3.3 of
+# ccl_mozilla_reader has no Python 3.13 wheel and is compiled here)
+RUN python -m venv /opt/aleapp-venv
+COPY ALEAPP/requirements.txt /aleapp-requirements.txt
+RUN /opt/aleapp-venv/bin/pip install -r /aleapp-requirements.txt
+
 
 ###############################################################################
 # Stage 2: create the distributable plugin image
@@ -24,8 +31,11 @@ RUN pip install -Ur /requirements.txt
 
 FROM python:3.13-slim
 COPY --from=builder /venv /venv
+COPY --from=builder /opt/aleapp-venv /opt/aleapp-venv
 ENV PATH="/venv/bin:$PATH"
 
+# plugin.py defaults: ALEAPP_DIR=/app/ALEAPP, ALEAPP_PYTHON=/opt/aleapp-venv/bin/python
+COPY ALEAPP /app/ALEAPP
 COPY plugin.py /app/
 EXPOSE 8999
 ENTRYPOINT ["serve_plugin", "-v"]
