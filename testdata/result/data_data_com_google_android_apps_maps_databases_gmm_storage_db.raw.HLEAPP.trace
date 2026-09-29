@@ -5,6 +5,7 @@
     "path" : "/test-input-trace",
     "file" : {
       "extension" : "db",
+      "modifiedOn" : "2024-07-27T12:57:24.000Z",
       "name" : "gmm_storage.db",
       "path" : "/data/data/com.google.android.apps.maps/databases/gmm_storage.db"
     }

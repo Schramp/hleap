@@ -1,13 +1,15 @@
 import ast
+import datetime
 import fnmatch
 import io
 import json
 import os
+import posixpath
 import subprocess
 import tempfile
 import zipfile
 
-from hansken_extraction_plugin.api.extraction_plugin import ExtractionPlugin
+from hansken_extraction_plugin.api.extraction_plugin import DeferredExtractionPlugin
 from hansken_extraction_plugin.api.plugin_info import Author, MaturityLevel, PluginId, PluginInfo, PluginResources
 from hansken_extraction_plugin.runtime.extraction_plugin_runner import run_with_hanskenpy
 from logbook import Logger
@@ -39,30 +41,77 @@ def read_artifact_paths(module, key):
     raise ValueError(f'no __artifacts_v2__ in ALEAPP artifact {module}')
 
 
-def globs_to_matcher(globs):
-    """Turn ALEAPP globs into a Hansken matcher on file name; the full path is checked again in process().
-
-    A trailing '*' (sqlite sidecars like -journal/-wal) is dropped: only the main file triggers ALEAPP,
-    fetching the sidecars needs a deferred plugin (phase 2).
-    """
-    names = sorted({glob.rsplit('/', 1)[-1].rstrip('*') for glob in globs})
-    if any(set(name) & set('*?[') for name in names):
-        raise ValueError(f'wildcards in file names not supported yet: {names}')
-    return '(' + ' OR '.join(f"file.name='{name}'" for name in names) + ') AND $data.type=raw'
-
+# step 1 (issue #2): hard-coded matcher, the files ALEAPP needs next to it are found with the searcher
+MATCHER = "file.name='gmm_storage.db' AND $data.type=raw"
+SEARCH_LIMIT = 100
 
 ARTIFACT_PATHS = read_artifact_paths(ARTIFACT_MODULE, ARTIFACT_KEY)
 
 
-def reconstruct(trace, fs_dir):
-    """Write the trace data into fs_dir at its file.path, so ALEAPP sees a normal extracted filesystem."""
-    rel_path = (trace.get('file.path') or trace.get('file.name') or trace.get('name')).lstrip('/')
+def timestamp(value):
+    """Hansken dates arrive as datetime or ISO string, return epoch seconds or None."""
+    if isinstance(value, str):
+        value = datetime.datetime.fromisoformat(value.replace('Z', '+00:00'))
+    return value.timestamp() if isinstance(value, datetime.datetime) else None
+
+
+def materialize(trace, fs_dir):
+    """Write the raw data of a trace into fs_dir at its file.path, with its Hansken timestamps.
+
+    ALEAPP's FileSeekerDir reports st_ctime/st_mtime of the files it finds, so the modification time is carried
+    over; the creation time cannot be set on Linux.
+    """
+    rel_path = trace.get('file.path').lstrip('/')
     target = os.path.join(fs_dir, rel_path)
     os.makedirs(os.path.dirname(target), exist_ok=True)
-    with trace.open() as reader, open(target, 'wb') as writer:
-        while chunk := reader.read(1024 * 1024):
-            writer.write(chunk)
+    with open(target, 'wb') as writer:
+        if trace.get('data.raw.size', None) != 0:
+            with trace.open() as reader:
+                while chunk := reader.read(1024 * 1024):
+                    writer.write(chunk)
+    modified = timestamp(trace.get('file.modifiedOn'))
+    if modified is not None:
+        accessed = timestamp(trace.get('file.accessedOn')) or modified
+        os.utime(target, (accessed, modified))
     return rel_path
+
+
+class TraceFinder:
+    """Finds the traces of files in one directory whose name matches an ALEAPP glob.
+
+    Hansken evaluates searcher queries as HQL, the SDK standalone test framework as HQL-Lite (the matcher
+    language). This wrapper only sends a coarse name query in the dialect at hand and does the exact filtering
+    (same directory, ALEAPP glob) here, so both give the same result. Tests set HLEAPP_TEST_SEARCH=1 (tox.ini).
+    """
+
+    def __init__(self, searcher, hql_lite=os.environ.get('HLEAPP_TEST_SEARCH', '0') == '1'):
+        self._searcher = searcher
+        self._hql_lite = hql_lite
+
+    def query(self, name_glob):
+        if self._hql_lite:
+            return f'file.name={name_glob}'
+        # TODO verify on a real Hansken: wildcard and escaping of names with spaces or HQL characters
+        return f'file.name:{name_glob}'
+
+    def find(self, directory, glob):
+        for found in self._searcher.search(self.query(posixpath.basename(glob)), count=SEARCH_LIMIT):
+            path = found.get('file.path')
+            # the name query covers the whole image, keep only what ALEAPP would match in this directory
+            if path and posixpath.dirname(path) == directory and fnmatch.fnmatch('root' + path, glob):
+                yield path, found
+
+
+def emulate_fs(trace, finder, fs_dir):
+    """Rebuild the part of the filesystem ALEAPP needs: the matched trace plus the files next to it
+    that match the artifact globs (sqlite sidecars like -journal/-wal/-shm). Returns the written paths."""
+    anchor_path = trace.get('file.path')
+    written = {anchor_path: materialize(trace, fs_dir)}
+    for glob in ARTIFACT_PATHS:
+        for path, found in finder.find(posixpath.dirname(anchor_path), glob):
+            if path not in written:
+                written[path] = materialize(found, fs_dir)
+    return sorted(written.values())
 
 
 def run_aleapp(fs_dir, out_dir, work_dir):
@@ -88,31 +137,32 @@ def zip_folder(folder):
     return buffer.getvalue()
 
 
-class Plugin(ExtractionPlugin):
+class Plugin(DeferredExtractionPlugin):
 
     def plugin_info(self):
         plugin_info = PluginInfo(
             id=PluginId(domain='github.com/Schramp', category='extract', name='HLEAPP'),
             version='0.0.1',
-            description=f'Runs ALEAPP artifact {ARTIFACT_MODULE} on files reconstructed from Hansken traces',
+            description=f'Runs ALEAPP artifact {ARTIFACT_MODULE} on a filesystem emulated from Hansken traces',
             author=Author('Ruud Schramp', 'netwerkforens@gmail.com', 'NFI'),
             maturity=MaturityLevel.PROOF_OF_CONCEPT,
             webpage_url='https://github.com/Schramp/hleap',
-            matcher=globs_to_matcher(ARTIFACT_PATHS),
+            matcher=MATCHER,
             license='Apache License 2.0',
             resources=PluginResources(maximum_cpu=2, maximum_memory=1024, maximum_workers=4),
         )
         return plugin_info
 
-    def process(self, trace, data_context):
+    def process(self, trace, data_context, searcher):
+        rel_path = (trace.get('file.path') or '').lstrip('/')
+        # the matcher only checks the file name, ALEAPP matches its globs against 'root/' + relative path
+        if not any(fnmatch.fnmatch('root/' + rel_path, glob) for glob in ARTIFACT_PATHS):
+            log.info(f'{rel_path} does not match {ARTIFACT_PATHS}, skipping')
+            return
         with tempfile.TemporaryDirectory(prefix='hleapp-') as work_dir:
             fs_dir = os.path.join(work_dir, 'fs')
-            rel_path = reconstruct(trace, fs_dir)
-            # the matcher only checks the file name, ALEAPP matches its globs against 'root/' + relative path
-            if not any(fnmatch.fnmatch('root/' + rel_path, glob) for glob in ARTIFACT_PATHS):
-                log.info(f'{rel_path} does not match {ARTIFACT_PATHS}, skipping')
-                return
-            log.info(f'running ALEAPP {ARTIFACT_KEY} on {rel_path}')
+            files = emulate_fs(trace, TraceFinder(searcher), fs_dir)
+            log.info(f'running ALEAPP {ARTIFACT_KEY} on {files}')
             report_dir = run_aleapp(fs_dir, os.path.join(work_dir, 'out'), work_dir)
 
             tsv_dir = os.path.join(report_dir, '_TSV Exports')

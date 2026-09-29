@@ -1,0 +1,18 @@
+{
+  "trace": {
+    "file": {
+      "name": "gmm_storage.db-journal",
+      "path": "/data/data/com.google.android.apps.maps/databases/gmm_storage.db-journal",
+      "modifiedOn": "2024-01-26T16:47:10.000Z",
+      "extension": "db-journal"
+    },
+    "id": "search-1",
+    "name": "gmm_storage.db-journal",
+    "path": "/data/data/com.google.android.apps.maps/databases/gmm_storage.db-journal",
+    "data": {
+      "raw": {
+        "size": 0
+      }
+    }
+  }
+}
