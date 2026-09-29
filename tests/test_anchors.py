@@ -3,7 +3,8 @@ import os
 
 import pytest
 
-from anchors import CONFLICT_DROPS, Anchor, AnchorPlan, load_modules, load_profile, tree_paths, write_profile
+from anchors import (CONFLICT_DROPS, Anchor, AnchorPlan, aleapp_path, load_modules, load_profile, tree_paths,
+                     write_profile)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TREE = os.path.join(ROOT, 'testdata', 'practical_exercise.zip')
@@ -135,3 +136,8 @@ def test_profile_with_unknown_modules_is_refused(tmp_path):
     write_profile(path, ['get_googleMapsGmm', 'get_googleMapsGnm'])
     with pytest.raises(ValueError, match='get_googleMapsGnm'):
         load_profile(path, load_modules(os.path.join(ROOT, 'ALEAPP')))
+
+
+@pytest.mark.parametrize('file_path', ['data/data/x/y.db', '/data/data/x/y.db'])
+def test_aleapp_path_accepts_hansken_and_absolute_paths(file_path):
+    assert aleapp_path(file_path) == 'root/data/data/x/y.db'

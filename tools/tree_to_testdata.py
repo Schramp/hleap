@@ -52,7 +52,8 @@ def flat_name(rel_path):
 
 def write_pair(out_dir, rel_path, modified, data, trace_id=None):
     name = posixpath.basename(rel_path)
-    file_meta = {'name': name, 'path': '/' + rel_path, 'modifiedOn': modified.strftime('%Y-%m-%dT%H:%M:%S.000Z')}
+    # file.path as Hansken writes it: relative, without a leading slash (the trace path does start with '/')
+    file_meta = {'name': name, 'path': rel_path, 'modifiedOn': modified.strftime('%Y-%m-%dT%H:%M:%S.000Z')}
     extension = posixpath.splitext(name)[1].lstrip('.')
     if extension:
         file_meta['extension'] = extension
@@ -63,7 +64,7 @@ def write_pair(out_dir, rel_path, modified, data, trace_id=None):
         trace = {'file': file_meta}
         if trace_id:
             # search traces need an id (it becomes their uid) and data.raw.size, or the test framework search fails
-            trace.update({'id': trace_id, 'name': name, 'path': file_meta['path'], 'data': {'raw': {'size': len(data)}}})
+            trace.update({'id': trace_id, 'name': name, 'path': '/' + rel_path, 'data': {'raw': {'size': len(data)}}})
         json.dump({'trace': trace}, trace_file, indent=2)
         trace_file.write('\n')
 

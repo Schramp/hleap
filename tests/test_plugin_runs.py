@@ -64,3 +64,11 @@ def test_traces_that_start_no_module_are_skipped(runs):
 def test_dropped_modules_do_not_run(runs):
     process('/data/data/com.life360.android.safetymapd/databases/messaging.db')  # get_Life360_chat_messages
     assert runs == []
+
+
+def test_hansken_file_path_without_leading_slash_starts_the_modules(runs):
+    """Issue #26: Hansken's file.path has no leading slash."""
+    trace = FakeTrace({'path': '/image/data/data/com.life360.android.safetymapd/cache/picasso-cache/journal',
+                       'file': {'path': 'data/data/com.life360.android.safetymapd/cache/picasso-cache/journal'}}, b'x')
+    plugin.Plugin().process(trace, DataContext(data_type='raw', data_size=1), searcher=None)
+    assert runs == [['life360CacheEmergencyContacts', 'life360CacheEntries', 'life360CacheMemberHistory']]
