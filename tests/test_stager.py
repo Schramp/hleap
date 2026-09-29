@@ -141,3 +141,22 @@ def test_materialize_writes_empty_file_without_opening(tmp_path):
     trace = FakeTrace(f'{DATABASES}/gmm_storage.db-journal', b'')
     trace.open = None  # an empty trace must not be opened
     assert (tmp_path / materialize(trace, str(tmp_path))).read_bytes() == b''
+
+
+def test_scope_keeps_other_anchors_files_out(out_dir):
+    cache = '/data/data/com.life360.android.safetymapd/cache'
+    anchor = FakeTrace(f'{cache}/picasso-cache/journal', b'j')
+    searcher = FakeSearcher([FakeTrace(f'{cache}/picasso-cache/' + 'a' * 32 + '.0', b'x'),
+                             FakeTrace(f'{cache}/http_cache/' + 'b' * 32 + '.0', b'y')])
+    stager = Stager(anchor, searcher, out_dir, scope=lambda glob: f'root{cache}/picasso-cache', hql_lite=True)
+    staged = stage(stager, out_dir, glob='*/com.life360.android.safetymapd/cache/*/' + '[0-9a-f]' * 32 + '.[01]')
+    assert [item['source_path'].rsplit('/', 2)[-2] for item in staged] == ['picasso-cache']
+
+
+def test_folder_anchor_is_staged_as_a_folder(out_dir):
+    folder = '/data/data/com.openai.chatgpt/cache/files'
+    anchor = FakeTrace(folder, data=None)
+    stager = Stager(anchor, FakeSearcher([]), out_dir, anchor_is_dir=True, hql_lite=True)
+    staged = stage(stager, out_dir, glob='**/com.openai.chatgpt/cache/files')
+    assert [item['source_path'] for item in staged] == [folder.lstrip('/')]
+    assert (out_dir / 'report' / 'data' / folder.lstrip('/')).is_dir()

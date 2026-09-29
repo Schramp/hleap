@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from anchors import Anchor, AnchorPlan, load_modules, tree_paths
+from anchors import CONFLICT_DROPS, Anchor, AnchorPlan, load_modules, load_profile, tree_paths, write_profile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TREE = os.path.join(ROOT, 'testdata', 'practical_exercise.zip')
@@ -78,3 +78,60 @@ def test_anchor_traces_trigger_their_modules(plan):
     plan, _, _ = plan
     assert plan.triggered_by(GMM) == ['get_googleMapsGmm']
     assert plan.triggered_by(GMM + '-journal') == []
+
+
+def test_conflict_drops_cover_every_conflict_in_the_test_tree():
+    """In Hansken there is no tree to check: the conflicts found here must all be in CONFLICT_DROPS."""
+    plan = AnchorPlan(load_modules(os.path.join(ROOT, 'ALEAPP')), drop=CONFLICT_DROPS)
+    files, dirs = tree_paths(TREE)
+    assert plan.check(files, dirs) == []
+
+
+LIFE360_CACHE = 'root/data/data/com.life360.android.safetymapd/cache'
+
+
+@pytest.fixture(scope='module')
+def dropped_plan():
+    return AnchorPlan(load_modules(os.path.join(ROOT, 'ALEAPP')), drop=CONFLICT_DROPS)
+
+
+def test_globs_next_to_the_anchor_are_limited_to_its_folder(dropped_plan):
+    anchor = f'{LIFE360_CACHE}/picasso-cache/journal'
+    modules = dropped_plan.triggered_by(anchor)
+    assert modules == ['life360CacheEmergencyContacts', 'life360CacheEntries', 'life360CacheMemberHistory']
+    for glob in dropped_plan.modules[modules[0]]:
+        assert dropped_plan.search_scope(modules, glob, anchor) == f'{LIFE360_CACHE}/picasso-cache'
+    gmm = 'root/data/data/com.google.android.apps.maps/databases/gmm_storage.db'
+    assert dropped_plan.search_scope(['get_googleMapsGmm'], dropped_plan.modules['get_googleMapsGmm'][0], gmm) == \
+        'root/data/data/com.google.android.apps.maps/databases'
+
+
+def test_globs_elsewhere_search_the_whole_image():
+    plan = AnchorPlan({'chess': ('*/com.chess/shared_prefs/*', '*/com.chess/databases/chess.db*'),
+                       'media': ('*/com.other/databases/x.db', '*/com.chess/shared_prefs/*')})
+    folder = 'root/data/data/com.chess/shared_prefs'
+    # next to the (directory) anchor: limited; elsewhere in the app: whole image
+    assert plan.search_scope(['chess'], '*/com.chess/shared_prefs/*', folder, is_dir=True) == folder
+    assert plan.search_scope(['chess'], '*/com.chess/databases/chess.db*', folder, is_dir=True) is None
+    # a glob no started module declares (searched from module code) is not limited
+    assert plan.search_scope(['chess'], '*/packages.xml', folder, is_dir=True) is None
+    # modules started together that disagree: the whole image wins
+    anchor = 'root/data/data/com.other/databases/x.db'
+    assert plan.search_scope(['media'], '*/com.chess/shared_prefs/*', anchor) is None
+    assert plan.search_scope(['chess', 'media'], '*/com.chess/shared_prefs/*', folder, is_dir=True) is None
+
+
+def test_example_profile_selects_exactly_the_modules_the_test_tree_starts():
+    modules = load_modules(os.path.join(ROOT, 'ALEAPP'))
+    selected = load_profile(os.path.join(ROOT, 'hleapp.alprofile'), modules)
+    plan = AnchorPlan(modules, drop=CONFLICT_DROPS)
+    files, dirs = tree_paths(TREE)
+    started = {key for path in files | dirs for key in plan.triggered_by(path, is_dir=path in dirs)}
+    assert set(selected) == started
+
+
+def test_profile_with_unknown_modules_is_refused(tmp_path):
+    path = tmp_path / 'typo.alprofile'
+    write_profile(path, ['get_googleMapsGmm', 'get_googleMapsGnm'])
+    with pytest.raises(ValueError, match='get_googleMapsGnm'):
+        load_profile(path, load_modules(os.path.join(ROOT, 'ALEAPP')))
