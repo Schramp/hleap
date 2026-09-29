@@ -21,6 +21,16 @@ import os
 import re
 
 SIDECAR_SUFFIXES = ('-wal', '-shm', '-journal')
+
+# Modules dropped for conflicts found by tools/anchor_check.py on the test trees. In Hansken there is no tree to
+# check against, so these are kept here; tests/test_anchors.py fails when a test tree shows a conflict missing here.
+CONFLICT_DROPS = {
+    'get_chromeAutofill': 'needs app_webview/Default/Web Data, an anchor of the Mister Skinnylegs modules',
+    'get_chromeAutofillProfiles': 'needs app_webview/Default/Web Data, an anchor of the Mister Skinnylegs modules',
+    'get_chromeCreditCards': 'needs app_webview/Default/Web Data, an anchor of the Mister Skinnylegs modules',
+    'get_chromePaymentsCustomerData': 'needs app_webview/Default/Web Data, an anchor of the Mister Skinnylegs modules',
+    'get_Life360_chat_messages': 'needs cache/picasso-cache/journal, an anchor of the Life360 API cache modules',
+}
 WILDCARDS = re.compile(r'[*?\[]')
 
 
@@ -66,6 +76,11 @@ class Anchor:
             self.glob, self.kind = glob, 'file'
 
     @property
+    def base(self):
+        """The folder pattern of the anchor: the anchor itself for a directory anchor, else its parent."""
+        return self.glob if self.kind == 'dir' else self.glob.rpartition('/')[0]
+
+    @property
     def eligible(self):
         """True when the anchor has literal text to select on: a fully literal path segment, or a name that is
         more than a wildcard plus an extension or suffix ('*.jpg', '*-wal', '*.realm' are not eligible,
@@ -99,11 +114,12 @@ class Anchor:
 class AnchorPlan:
     """Kept and dropped modules for a set of ALEAPP modules, optionally checked against a concrete file tree."""
 
-    def __init__(self, modules):
+    def __init__(self, modules, drop=None):
         self.modules = modules
         self.anchors = {key: Anchor(paths[0]) for key, paths in modules.items()}
         self.dropped = {key: 'anchor without literal text' for key, anchor in self.anchors.items()
                         if not anchor.eligible}
+        self.dropped.update({key: reason for key, reason in (drop or {}).items() if key in modules})
         self.conflicts = []
 
     @property
@@ -131,6 +147,22 @@ class AnchorPlan:
                     self.dropped[key] = f'needs {path[len("root/"):]}, anchor of {", ".join(owners[:2])}'
                     break
         return self.conflicts
+
+    def search_scope(self, modules, glob, anchor_path, is_dir=False):
+        """The folder (ALEAPP style) that searches for glob are limited to in a run started by anchor_path, or None
+        for the whole image.
+
+        A glob that starts with the folder pattern of a started module's anchor (e.g. the sqlite sidecars, or
+        cache entries next to a cache journal) is limited to the anchor's concrete folder, so modules with several
+        anchors on a device do not stage the same files once per anchor. Other globs (files elsewhere in the app,
+        or in other apps) search the whole image. When modules disagree, the whole image wins.
+        """
+        folder = anchor_path if is_dir else anchor_path.rpartition('/')[0]
+        scopes = set()
+        for key in modules:
+            if glob in self.modules[key]:
+                scopes.add(folder if glob.startswith(self.anchors[key].base + '/') else None)
+        return folder if scopes == {folder} else None
 
     def matcher(self):
         clauses = sorted({anchor.hql_lite() for anchor in self.kept.values()})

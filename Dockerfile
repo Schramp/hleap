@@ -42,7 +42,7 @@ ENV PATH="/venv/bin:$PATH"
 
 # plugin.py defaults: ALEAPP_DIR=/app/ALEAPP, ALEAPP_PYTHON=/opt/aleapp-venv/bin/python
 COPY ALEAPP /app/ALEAPP
-COPY plugin.py hleapp_rpc.py hleapp_launcher.py /app/
+COPY plugin.py anchors.py hleapp_rpc.py hleapp_launcher.py /app/
 EXPOSE 8999
 ENTRYPOINT ["serve_plugin", "-v"]
 CMD ["/app/plugin.py", "8999"]

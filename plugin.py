@@ -1,4 +1,3 @@
-import ast
 import csv
 import datetime
 import fnmatch
@@ -17,6 +16,7 @@ from hansken_extraction_plugin.api.plugin_info import Author, MaturityLevel, Plu
 from hansken_extraction_plugin.runtime.extraction_plugin_runner import run_with_hanskenpy
 from logbook import Logger
 
+from anchors import CONFLICT_DROPS, AnchorPlan, load_modules
 from hleapp_rpc import RpcServer
 
 log = Logger(__name__)
@@ -29,10 +29,6 @@ ALEAPP_TIMEOUT = int(os.environ.get('ALEAPP_TIMEOUT', '600'))
 # the zipped report holds run timestamps, tests turn it off to get reproducible results
 HLEAPP_REPORT = os.environ.get('HLEAPP_REPORT', '1') != '0'
 
-# the single ALEAPP artifact this plugin runs (phase 1): module in scripts/artifacts, key in __artifacts_v2__
-ARTIFACT_MODULE = 'googleMapsGmm'
-ARTIFACT_KEY = 'get_googleMapsGmm'
-
 REPORT_FOLDER = 'report'
 REPORT_CHILD = 'ALEAPP report'
 # LAVA output of ALEAPP: artifact metadata (json) and one sqlite table per artifact
@@ -40,22 +36,10 @@ LAVA_JSON = '_lava_data.lava'
 LAVA_DB = '_lava_artifacts.db'
 
 
-def read_artifact_paths(module, key):
-    """Read the path globs of an ALEAPP artifact without importing it (ALEAPP deps live in its own venv)."""
-    with open(os.path.join(ALEAPP_DIR, 'scripts', 'artifacts', f'{module}.py'), encoding='utf8') as source:
-        tree = ast.parse(source.read())
-    for node in tree.body:
-        if isinstance(node, ast.Assign) and getattr(node.targets[0], 'id', None) == '__artifacts_v2__':
-            paths = ast.literal_eval(node.value)[key]['paths']
-            return (paths,) if isinstance(paths, str) else tuple(paths)
-    raise ValueError(f'no __artifacts_v2__ in ALEAPP artifact {module}')
-
-
-# step 1 (issue #2): hard-coded matcher, the files ALEAPP needs next to it are found with the searcher
-MATCHER = "file.name='gmm_storage.db' AND $data.type=raw"
+# which ALEAPP modules run, started by which traces (anchors.py, issue #13); conflicting modules are dropped
+PLAN = AnchorPlan(load_modules(ALEAPP_DIR), drop=CONFLICT_DROPS)
+MATCHER = PLAN.matcher()
 SEARCH_LIMIT = 100
-
-ARTIFACT_PATHS = read_artifact_paths(ARTIFACT_MODULE, ARTIFACT_KEY)
 
 
 def timestamp(value):
@@ -117,13 +101,17 @@ class Stager:
     data folder, one copy per file (see hleapp_launcher.HanskenSeeker).
 
     The anchor trace (the one process() got) is matched here directly: under the deferred constraint a search never
-    returns it.
+    returns it. scope(glob) gives the ALEAPP style folder a glob's results are limited to, or None for the whole
+    image (AnchorPlan.search_scope).
     """
 
-    def __init__(self, anchor, searcher, out_dir, hql_lite=os.environ.get('HLEAPP_TEST_SEARCH', '0') == '1'):
+    def __init__(self, anchor, searcher, out_dir, scope=None, anchor_is_dir=False,
+                 hql_lite=os.environ.get('HLEAPP_TEST_SEARCH', '0') == '1'):
         self._anchor = anchor
         self._searcher = searcher
         self._out_dir = os.path.realpath(out_dir)
+        self._scope = scope or (lambda glob: None)
+        self._anchor_is_dir = anchor_is_dir
         self._hql_lite = hql_lite
         self._staged = {}
 
@@ -142,18 +130,25 @@ class Stager:
             candidates += self._searcher.search(query, count=SEARCH_LIMIT)
         else:
             log.info(f'ALEAPP glob {glob} has no literal text to search on, skipped')
+        folder = self._scope(glob)
         results, seen = [], set()
         for trace in candidates:
             path = trace.get('file.path')
             if not path or path in seen or not fnmatch.fnmatch('root' + path, glob):
                 continue
+            if folder and not ('root' + path).startswith(folder + '/'):
+                continue  # belongs to another anchor's run of the same module
             if trace is not self._anchor and trace.get('data.raw.size') is None:
                 log.info(f'{path} has no raw data, not staged')
                 continue
             seen.add(path)
             key = (data_folder, path)
             if key not in self._staged:
-                rel_path = materialize(trace, data_folder)
+                if trace is self._anchor and self._anchor_is_dir:
+                    rel_path = path.lstrip('/')
+                    os.makedirs(os.path.join(data_folder, rel_path), exist_ok=True)
+                else:
+                    rel_path = materialize(trace, data_folder)
                 modified = timestamp(trace.get('file.modifiedOn')) or 0
                 self._staged[key] = {'staged': os.path.join(data_folder, rel_path), 'source_path': rel_path,
                                      'ctime': timestamp(trace.get('file.createdOn')) or modified, 'mtime': modified}
@@ -163,13 +158,13 @@ class Stager:
         return results
 
 
-def run_aleapp(input_dir, out_dir, work_dir, handlers=None):
+def run_aleapp(input_dir, out_dir, work_dir, modules, handlers=None):
     """Run ALEAPP in its own venv through hleapp_launcher.py and serve its RPC requests (handlers, see hleapp_rpc)
     on this thread."""
     os.makedirs(out_dir, exist_ok=True)
     profile = os.path.join(work_dir, 'hleapp.alprofile')
     with open(profile, 'w') as profile_file:
-        json.dump({'leapp': 'aleapp', 'format_version': 1, 'plugins': [ARTIFACT_KEY]}, profile_file)
+        json.dump({'leapp': 'aleapp', 'format_version': 1, 'plugins': list(modules)}, profile_file)
     command = [ALEAPP_PYTHON, LAUNCHER, '-t', 'fs', '-i', input_dir, '-o', out_dir,
                '-m', profile, '--custom_output_folder', REPORT_FOLDER]
     # ALEAPP output goes to a file: a pipe nobody reads while requests are served could fill up and block ALEAPP
@@ -248,7 +243,8 @@ class Plugin(DeferredExtractionPlugin):
         plugin_info = PluginInfo(
             id=PluginId(domain='github.com/Schramp', category='extract', name='HLEAPP'),
             version='0.0.1',
-            description=f'Runs ALEAPP artifact {ARTIFACT_MODULE}, fetching its files from Hansken on demand',
+            description=f'Runs the {len(PLAN.kept)} ALEAPP modules started by their anchor traces, '
+                        'fetching their files from Hansken on demand',
             author=Author('Ruud Schramp', 'netwerkforens@gmail.com', 'NFI'),
             maturity=MaturityLevel.PROOF_OF_CONCEPT,
             webpage_url='https://github.com/Schramp/hleap',
@@ -265,19 +261,28 @@ class Plugin(DeferredExtractionPlugin):
             log.info(f'{trace.get("path")} lies inside an {REPORT_CHILD}, skipping')
             return
         rel_path = (trace.get('file.path') or '').lstrip('/')
-        # the matcher only checks the file name, ALEAPP matches its globs against 'root/' + relative path
-        if not any(fnmatch.fnmatch('root/' + rel_path, glob) for glob in ARTIFACT_PATHS):
-            log.info(f'{rel_path} does not match {ARTIFACT_PATHS}, skipping')
+        # the matcher may select more than the anchors (e.g. character classes widen to '?'): check exactly,
+        # ALEAPP style ('root/' + path); a folder trace can only start directory anchors
+        anchor_path = 'root/' + rel_path
+        is_dir = False
+        modules = PLAN.triggered_by(anchor_path)
+        if not modules:
+            modules = PLAN.triggered_by(anchor_path, is_dir=True)
+            is_dir = bool(modules)
+        if not modules:
+            log.info(f'{rel_path} is no anchor of an ALEAPP module, skipping')
             return
         with tempfile.TemporaryDirectory(prefix='hleapp-') as work_dir:
             # ALEAPP wants an existing input folder; its files come on demand through the Stager instead
             input_dir = os.path.join(work_dir, 'input')
             os.makedirs(input_dir)
             out_dir = os.path.join(work_dir, 'out')
-            stager = Stager(trace, searcher, out_dir)
-            log.info(f'running ALEAPP {ARTIFACT_KEY} for {rel_path}')
-            report_dir = run_aleapp(input_dir, out_dir, work_dir, {'search_and_stage': stager.search_and_stage})
-            log.info(f'ALEAPP {ARTIFACT_KEY} staged {stager.staged_paths}')
+            stager = Stager(trace, searcher, out_dir, anchor_is_dir=is_dir,
+                            scope=lambda glob: PLAN.search_scope(modules, glob, anchor_path, is_dir))
+            log.info(f'running ALEAPP {modules} for {rel_path}')
+            report_dir = run_aleapp(input_dir, out_dir, work_dir, modules,
+                                    {'search_and_stage': stager.search_and_stage})
+            log.info(f'ALEAPP {modules} staged {stager.staged_paths}')
 
             tsv_dir = os.path.join(report_dir, '_TSV Exports')
             for tsv in sorted(os.listdir(tsv_dir)) if os.path.isdir(tsv_dir) else []:

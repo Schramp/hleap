@@ -19,9 +19,10 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   standalone test framework as HQL-Lite. `glob_query()` in `plugin.py` builds
   a coarse query in the right dialect (`HLEAPP_TEST_SEARCH=1` in `tox.ini`
   selects HQL-Lite) and the `Stager` filters exactly with the ALEAPP glob.
-- **Matcher**: hard-coded for step 1
-  (`file.name='gmm_storage.db' AND $data.type=raw`); later generated from the
-  module anchors (#13, see Target design).
+- **Matcher**: generated from the module anchors (`PLAN.matcher()` in
+  `plugin.py`, #4/#13, see Target design). `process()` checks the trace path
+  exactly against the anchors and runs every module it starts in one ALEAPP
+  run (multi-module `.alprofile`).
 - **Execution**: ALEAPP runs as a subprocess in a separate venv
   (`/opt/aleapp-venv`), because ALEAPP pins protobuf 5.x and the plugin SDK
   needs protobuf 7.x. An `.alprofile` limits ALEAPP to the selected module(s).
@@ -63,8 +64,19 @@ Hansken extraction plugin that runs ALEAPP on files Hansken already extracted.
   trees it is checked against. The generated HQL-Lite matcher (~118 KB) parses
   in the SDK test framework and matches only `gmm_storage.db` of the test
   inputs; quoting, `type:folder` and matcher size on a real Hansken are #10.
-  A module can have several anchors on one device (e.g. the 9 `cache/*/journal`
-  files of the Life360 API cache modules); runs then overlap, see #4.
+  In Hansken there is no tree to find conflicts in, so the conflict drops are
+  kept in `anchors.CONFLICT_DROPS`; a test fails when a test tree shows a
+  conflict missing there.
+- **Search scope per run** (#4): a module can have several anchors on one
+  device (e.g. the 9 `cache/*/journal` files of the Life360 API cache
+  modules). A glob that starts with the folder pattern of a started module's
+  anchor (sidecars, cache entries next to their journal) is limited to that
+  anchor's concrete folder; every other glob searches the whole image
+  (`AnchorPlan.search_scope()`). On the test tree this removes all 1722
+  duplicate stagings and loses no file. Limiting every glob to the anchor's
+  folder would break the 220 modules that read files elsewhere (e.g.
+  `get_ChessComAccount`: `shared_prefs` and `databases`); limiting to the app
+  folder removes no duplicates.
 - **On-demand file access** (#15): the plugin starts `hleapp_launcher.py` in
   the ALEAPP venv (with an empty `-i` folder). It replaces ALEAPP's
   `FileSeekerDir` by `HanskenSeeker` for that run only (`aleapp.py` does
@@ -109,12 +121,13 @@ available, and must be done before production use):
 2. Done (#14): RPC channel between plugin and ALEAPP venv.
 3. Done (#15): HanskenSeeker, on-demand file access (the same 4 rows from
    `gmm_storage.db`; ALEAPP now asks for the `-journal` itself).
-4. #10 Verify the HQL query forms on a real Hansken (`file.name`/`file.path`
+4. Done (#4): one ALEAPP run per anchor trace with all modules it starts,
+   matcher from the anchor plan, search scope per run.
+5. #10 Verify the HQL query forms on a real Hansken (`file.name`/`file.path`
    wildcards, `NOT type:deleted`, names with spaces, time per search, folder
    traces as anchors).
 
 **P2 — before production use**:
-- #4 One ALEAPP run per anchor trace with all modules it triggers.
 - #3 Map Hansken `file.path` to ALEAPP root paths.
 - #11 Use LAVA child traces in `process()`.
 - #7 Docker image and integration test.
