@@ -10,6 +10,7 @@ import re
 import sqlite3
 import subprocess
 import tempfile
+import time
 import zipfile
 
 from hansken_extraction_plugin.api.extraction_plugin import DeferredExtractionPlugin
@@ -132,7 +133,9 @@ class Stager:
         candidates = [self._anchor]
         query = glob_query(glob, self._hql_lite)
         if query:
-            candidates += self._searcher.search(query, count=SEARCH_LIMIT)
+            found = list(self._searcher.search(query, count=SEARCH_LIMIT))
+            log.debug(f'ALEAPP glob {glob}: search {query!r} returned {len(found)} traces')
+            candidates += found
         else:
             log.info(f'ALEAPP glob {glob} has no literal text to search on, skipped')
         folder = self._scope(glob)
@@ -140,8 +143,10 @@ class Stager:
         for trace in candidates:
             path = trace.get('file.path')
             if not path or path in seen or not fnmatch.fnmatch('root' + path, glob):
+                log.debug(f'ALEAPP glob {glob}: {path!r} does not match or was seen already')
                 continue
             if folder and not ('root' + path).startswith(folder + '/'):
+                log.debug(f'ALEAPP glob {glob}: {path} is outside the search scope {folder}')
                 continue  # belongs to another anchor's run of the same module
             if trace is not self._anchor and trace.get('data.raw.size') is None:
                 log.info(f'{path} has no raw data, not staged')
@@ -160,6 +165,7 @@ class Stager:
             results.append(self._staged[key])
             if first_hit:
                 break
+        log.info(f'ALEAPP glob {glob}: staged {[item["source_path"] for item in results]}')
         return results
 
 
@@ -174,13 +180,73 @@ def run_aleapp(input_dir, out_dir, work_dir, modules, handlers=None):
                '-m', profile, '--custom_output_folder', REPORT_FOLDER]
     # ALEAPP output goes to a file: a pipe nobody reads while requests are served could fill up and block ALEAPP
     aleapp_log = os.path.join(work_dir, 'aleapp.log')
+    log.info(f'starting ALEAPP: {command}')
+    started = time.monotonic()
     with open(aleapp_log, 'w') as log_file:
         returncode = RpcServer(handlers or {}, log).run(command, ALEAPP_TIMEOUT, cwd=ALEAPP_DIR,
                                                         stdout=log_file, stderr=subprocess.STDOUT)
+    log.info(f'ALEAPP exited with {returncode} after {time.monotonic() - started:.1f}s')
+    with open(aleapp_log, errors='replace') as log_file:
+        output = log_file.read()
+    log_aleapp_output(output)
     if returncode != 0:
-        with open(aleapp_log, errors='replace') as log_file:
-            raise RuntimeError(f'ALEAPP failed ({returncode}): {log_file.read()[-4000:]}')
+        raise RuntimeError(f'ALEAPP failed ({returncode}): {output[-4000:]}')
     return os.path.join(out_dir, REPORT_FOLDER)
+
+
+# ALEAPP output lines worth seeing at info level: ALEAPP catches the error of a module, logs it and still exits 0
+ALEAPP_NOTABLE = re.compile(r'error|traceback|exception|failed|no file found|artifact (started|completed)',
+                            re.IGNORECASE)
+ALEAPP_LOG_TAIL = 20000
+
+
+def log_aleapp_output(output):
+    """Log ALEAPP's own output: the notable lines at info, the tail of the whole output at debug."""
+    lines = output.splitlines()
+    notable = [line for line in lines if ALEAPP_NOTABLE.search(line)]
+    log.info(f'ALEAPP output: {len(lines)} lines, {len(notable)} notable')
+    for line in notable:
+        log.info(f'ALEAPP | {line}')
+    log.debug(f'ALEAPP output (last {ALEAPP_LOG_TAIL} characters):\n{output[-ALEAPP_LOG_TAIL:]}')
+
+
+def folder_size(path):
+    return sum(os.path.getsize(os.path.join(folder, name)) for folder, _, names in os.walk(path) for name in names)
+
+
+def log_report(report_dir):
+    """Log what ALEAPP left in its report folder and the status per module it recorded in the LAVA json."""
+    if not os.path.isdir(report_dir):
+        log.error(f'ALEAPP report folder {report_dir} does not exist')
+        return
+    for name in sorted(os.listdir(report_dir)):
+        path = os.path.join(report_dir, name)
+        if os.path.isdir(path):
+            log.info(f'ALEAPP report: {name}/ {folder_size(path)} bytes')
+        else:
+            log.info(f'ALEAPP report: {name} {os.path.getsize(path)} bytes')
+    lava_json = os.path.join(report_dir, LAVA_JSON)
+    if not os.path.isfile(lava_json):
+        log.error(f'ALEAPP wrote no {LAVA_JSON}, so there are no LAVA artifacts to add')
+        return
+    try:
+        with open(lava_json, encoding='utf8') as lava_file:
+            lava = json.load(lava_file)
+    except (OSError, ValueError) as error:
+        log.error(f'cannot read {lava_json}: {error!r}')
+        return
+    log.info(f'LAVA processing_status: {lava.get("processing_status")}')
+    # 'Complete', 'No files found' or 'Error' per module; an 'Error' is only explained in ALEAPP's output
+    for module in lava.get('modules', []):
+        log.info(f'LAVA module {module.get("module_name")} ({module.get("artifact_name")}): '
+                 f'{module.get("module_status")}, {module.get("file_count")} files')
+    artifacts = lava.get('artifacts', {})
+    if not artifacts:
+        log.warning('LAVA lists no artifacts: no module returned a table')
+    for category, entries in sorted(artifacts.items()):
+        for artifact in entries:
+            log.info(f'LAVA artifact {category} / {artifact.get("name")}: table {artifact.get("tablename")}, '
+                     f'{artifact.get("record_count")} records')
 
 
 def zip_folder(folder):
@@ -230,6 +296,7 @@ def read_lava(report_dir):
                 table = artifact['tablename'].replace('"', '""')
                 cursor = db.execute(f'SELECT * FROM "{table}"')
                 rows = cursor.fetchall()
+                log.debug(f'LAVA table {artifact["tablename"]} ({category} / {artifact["name"]}): {len(rows)} rows')
                 if rows:
                     columns = [column[0] for column in cursor.description]
                     # LAVA stores sanitized sql column names, column_map gives the original ALEAPP headers back
@@ -263,10 +330,19 @@ def add_lava_children(trace, report_dir):
     categories = {}
     count = 0
     for category, name, header, rows in read_lava(report_dir):
-        if category not in categories:
-            categories[category] = trace.child_builder(category)
-            categories[category].build()  # the SDK requires a parent to be built before its children
-        categories[category].child_builder(name).add_data('raw', to_tsv(header, rows)).build()
+        tsv = b''
+        try:
+            if category not in categories:
+                log.debug(f'building category child {category!r}')
+                categories[category] = trace.child_builder(category)
+                categories[category].build()  # the SDK requires a parent to be built before its children
+            tsv = to_tsv(header, rows)
+            log.debug(f'building artifact child {category!r} / {name!r}: {len(rows)} rows, {len(tsv)} bytes')
+            categories[category].child_builder(name).add_data('raw', tsv).build()
+        except Exception:
+            log.exception(f'adding LAVA child {category!r} / {name!r} ({len(rows)} rows, {len(tsv)} bytes) failed')
+            raise
+        log.info(f'added LAVA child {category} / {name}: {len(rows)} rows, {len(tsv)} bytes')
         count += 1
     return count
 
@@ -296,6 +372,15 @@ class Plugin(DeferredExtractionPlugin):
         return plugin_info
 
     def process(self, trace, data_context, searcher):
+        log.info(f'process: trace {trace.get("id")} path={trace.get("path")!r} file.path={trace.get("file.path")!r} '
+                 f'{data_context.data_type} data of {data_context.data_size} bytes')
+        try:
+            self._process(trace, searcher)
+        except Exception:
+            log.exception(f'process failed for {trace.get("file.path")!r}')
+            raise
+
+    def _process(self, trace, searcher):
         if inside_report(trace):
             # Hansken unpacks the report zip, which holds ALEAPP's copies of the evidence (data/, media/): they
             # must not start a new run on the plugin's own output
@@ -324,12 +409,16 @@ class Plugin(DeferredExtractionPlugin):
             report_dir = run_aleapp(input_dir, out_dir, work_dir, modules,
                                     {'search_and_stage': stager.search_and_stage})
             log.info(f'ALEAPP {modules} staged {stager.staged_paths}')
+            log_report(report_dir)
 
             # the LAVA report holds the same rows as _TSV Exports, plus category and table metadata
             count = add_lava_children(trace, report_dir)
             log.info(f'ALEAPP {modules} produced {count} non-empty artifacts')
             if HLEAPP_REPORT:
-                trace.child_builder(REPORT_CHILD).add_data('raw', zip_folder(report_dir)).build()
+                report_zip = zip_folder(report_dir)
+                log.info(f'adding {REPORT_CHILD} child: {len(report_zip)} bytes')
+                trace.child_builder(REPORT_CHILD).add_data('raw', report_zip).build()
+                log.info(f'added {REPORT_CHILD} child')
 
 
 if __name__ == '__main__':
