@@ -6,7 +6,7 @@ from logbook import Logger
 
 log = Logger(__name__)
 
-
+#ladiladi
 class Plugin(ExtractionPlugin):
 
     def plugin_info(self):
